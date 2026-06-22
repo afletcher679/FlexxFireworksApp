@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { supabase } from '@/lib/supabase';
@@ -23,6 +23,7 @@ export default function AdminScreen() {
     ...safeAreaInsets,
     bottom: safeAreaInsets.bottom + 80,
   };
+const router = useRouter();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -99,7 +100,7 @@ export default function AdminScreen() {
   };
 
   const handleAddProduct = () => {
-    // This will be handled by the "Add Product" screen, so we just navigate there
+    router.push('/add-product');
   };
 
   if (!isAuthenticated) {
@@ -157,19 +158,17 @@ export default function AdminScreen() {
         <ThemedView style={[styles.headerContainer, {paddingTop: insets.top + Spacing.six }]}>
           <ThemedText type="subtitle">Inventory Management</ThemedText>
           <ThemedView style={styles.buttonRow}>
-  <Link href="/add-product" asChild>
-    <Pressable
-      style={({ pressed }) => [
-        styles.headerButton,
-        { backgroundColor: theme.accent },
-        pressed && styles.pressed,
-      ]}
-        onPress={handleLogout}>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.addButton,
+                    { backgroundColor: theme.accent },
+                    pressed && styles.pressed,
+                  ]}
+                  onPress={handleAddProduct}>
       <ThemedText style={[styles.buttonText, { color: theme.background }]}>
         Add Product
       </ThemedText>
     </Pressable>
-  </Link>
   
   <Pressable
     style={({ pressed }) => [
@@ -177,7 +176,7 @@ export default function AdminScreen() {
       { backgroundColor: theme.backgroundElement },
       pressed && styles.pressed,
     ]}
-    onPress={handleAddProduct}>
+    onPress={handleLogout}>
     <ThemedText style={styles.logoutText}>Logout</ThemedText>
   </Pressable>
 </ThemedView>
@@ -287,7 +286,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   addButton: {
-    paddingVertical: Spacing.three,
+    flex: 1,
+    paddingVertical: Spacing.two,
+    paddingHorizontal: Spacing.three,
     borderRadius: Spacing.two,
     alignItems: 'center',
   },

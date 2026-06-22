@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { supabase, testConnection } from '@/lib/supabase';
 import type { Firework, Category } from '@/types';
-import { useProductFilter } from '../hooks/use-product-filter';
+import { useProductFilter } from '@/hooks/use-product-filter';
 import { SearchBar } from '@/components/search-bar';
 import { FilterPanel } from '@/components/filter-panel';
 import { ProductList } from '@/components/product-list';
@@ -67,19 +67,6 @@ if (loading) {
        {/* Sticky controls section - OUTSIDE ScrollView */}
        
       <ThemedView style={[styles.stickyControls, { borderBottomColor: theme.border }]}>
-        <Link href="/add-product" asChild>
-  <Pressable onPress={() => console.log('Navigating to Add Product screen')} style={({ pressed }) => [
-    {
-      backgroundColor: theme.accent,
-      paddingHorizontal: Spacing.three,
-      paddingVertical: Spacing.one,
-      borderRadius: 4,
-    },
-    pressed && { opacity: 0.8 },
-  ]}>
-    <ThemedText>TEST BUTTON</ThemedText>
-  </Pressable>
-</Link>
 
         <Collapsible title="Search, Filter, and Sort">
           <SearchBar

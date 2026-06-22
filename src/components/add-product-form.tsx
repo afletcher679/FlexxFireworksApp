@@ -85,12 +85,7 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
   };
 
   return (
-    <ThemedView
-      style={[
-        styles.container,
-        { backgroundColor: theme.backgroundElement },
-      ]}>
-      <Collapsible title="Add New Product">
+
         <ThemedView style={[styles.formContainer]}>
           <TextInput
             style={[
@@ -222,8 +217,6 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
             </Pressable>
           </ThemedView>
         </ThemedView>
-      </Collapsible>
-    </ThemedView>
   );
 }
 
