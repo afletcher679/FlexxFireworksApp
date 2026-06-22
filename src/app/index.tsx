@@ -1,62 +1,63 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useMemo } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
+import productsData from '@/data/products.json';
+import type { Firework } from '@/types';
+import { useProductFilter } from '../hooks/use-product-filter';
+import { SearchBar } from '@/components/search-bar';
+import { FilterPanel } from '@/components/filter-panel';
+import { ProductList } from '@/components/product-list';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Collapsible } from '@/components/ui/collapsible';
+import { BottomTabInset, Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+const products: Firework[] = productsData as Firework[];
+
+export default function CatalogScreen() {
+  const insets = useSafeAreaInsets();
+  const theme = useTheme();
+
+  const { filters, setFilters, sortKey, setSortKey, filteredProducts } =
+    useProductFilter(products);
+
+  const maxPriceCeiling = useMemo(() => {
+    return Math.ceil(Math.max(...products.map(p => p.price)));
+  }, []);
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+    <ThemedView style={[styles.container, { backgroundColor: theme.background }, { paddingTop: insets.top + Spacing.six }]}>
+       {/* Sticky controls section - OUTSIDE ScrollView */}
+       
+      <ThemedView style={[styles.stickyControls, { borderBottomColor: theme.border }]}>
+        <Collapsible title="Search, Filter, and Sort">
+          <SearchBar
+            query={filters.query}
+            onQueryChange={query => setFilters({ ...filters, query })}
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
+          <FilterPanel
+            filters={filters}
+            setFilters={setFilters}
+            sortOption={sortKey}
+            setSortOption={setSortKey}
+            maxPriceCeiling={maxPriceCeiling}
           />
-        </ThemedView>
+        </Collapsible>
+      </ThemedView>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
+      {/* Main scrollable content */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={{
+          paddingBottom: insets.bottom,
+        }}
+      >
+        <ThemedView style={styles.main}>
+          <ProductList products={filteredProducts} />
+        </ThemedView>
+      </ScrollView>
     </ThemedView>
   );
 }
@@ -64,35 +65,25 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
   },
-  safeArea: {
-    flex: 1,
+  header: {
     paddingHorizontal: Spacing.four,
+    paddingTop: Spacing.four,
+    paddingBottom: Spacing.two,
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    gap: Spacing.one,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
+  stickyControls: {
     paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+    gap: Spacing.three,
+    borderBottomWidth: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  main: {
+    paddingHorizontal: Spacing.four,
+    paddingVertical: Spacing.four,
   },
 });
