@@ -6,22 +6,10 @@
 // - Expandable details with a toggle button
 
 import { useState } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useTheme } from '@/hooks/use-theme';
+import type { Firework } from '@/types';
 
-// Product type - should match your Firework interface
-interface Firework {
-  id: string;
-  name: string;
-  brand?: string;
-  category: string;
-  price: number;
-  durationSeconds?: number;
-  description?: string;
-  videoUrl?: string;
-  stock: number;
-  tags?: string[];
-}
 
 interface ProductCardProps {
   product: Firework; // The firework product to display

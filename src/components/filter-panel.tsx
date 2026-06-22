@@ -5,21 +5,12 @@
 // 3. Price range slider to set maximum price
 // Updates parent component with filter changes in real-time
 
-import { View, Text, Pressable, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
 import { useTheme } from '@/hooks/use-theme';
-
-// Types - should match your project
-export type Category = 'Cake' | 'Fountain' | 'Roman Candle' | 'Mortar' | 'Sparkler' | 'Novelty' | 'Rocket' | 'Other';
-
-export type SortOptions = 'price-asc' | 'price-desc' | 'name';
-
-export interface Filters {
-  query: string;
-  categories: Set<Category>;
-  maxPrice: number | null;
-}
+import type { Filters, SortOptions } from '../hooks/use-product-filter';
+import type { Category } from '../types';
 
 const ALL_CATEGORIES: Category[] = [
   'Cake',
@@ -29,7 +20,6 @@ const ALL_CATEGORIES: Category[] = [
   'Sparkler',
   'Novelty',
   'Rocket',
-  'Other',
 ];
 
 interface FilterPanelProps {

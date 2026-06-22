@@ -5,20 +5,7 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useTheme } from '@/hooks/use-theme';
 import { ProductCard } from './product-card';
-
-// Product type - should match your Firework interface
-interface Firework {
-  id: string;
-  name: string;
-  brand?: string;
-  category: string;
-  price: number;
-  durationSeconds?: number;
-  description?: string;
-  videoUrl?: string;
-  stock: number;
-  tags?: string[];
-}
+import type { Firework } from '@/types';
 
 interface ProductListProps {
   products: Firework[]; // Array of firework products to display
@@ -65,7 +52,7 @@ export function ProductList({ products }: ProductListProps) {
   return (
     <FlatList
       data={products}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => <ProductCard product={item} />}
       scrollEnabled={false}
       contentContainerStyle={styles.listContainer}

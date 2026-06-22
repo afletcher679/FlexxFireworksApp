@@ -7,20 +7,7 @@
 // Uses useMemo for performance optimization to avoid unnecessary recalculations
 
 import { useState, useMemo } from 'react';
-
-// Product type - should match your Firework interface
-export interface Firework {
-  id: string;
-  name: string;
-  brand?: string;
-  category: string;
-  price: number;
-  durationSeconds?: number;
-  description?: string;
-  videoUrl?: string;
-  stock: number;
-  tags?: string[];
-}
+import { Firework } from '../types';
 
 // Category type definition
 export type Category = string; // Update this based on your actual categories

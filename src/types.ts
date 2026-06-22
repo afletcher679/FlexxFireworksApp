@@ -12,17 +12,14 @@ export type Category =
   | 'Mortar'
   | 'Sparkler'
   | 'Novelty'
-  | 'Multi-Shot'
-  | 'Assortment'
-  | 'Rocket'
-  | 'Other';
+  | 'Rocket';
 
 /**
  * Firework interface
  * Represents a single firework product with all its properties
  */
 export interface Firework {
-  id: string; // Unique identifier for the product
+  id: number; // Unique identifier for the product
   name: string; // Product name
   brand?: string; // Manufacturer brand (optional)
   category: Category; // Product category
@@ -31,5 +28,5 @@ export interface Firework {
   description: string; // Detailed product description
   videoUrl?: string; // URL to product video (optional)
   stock: number; // Number of items in stock
-  tags: string[]; // Array of searchable tags
+  tags?: string[]; // Array of searchable tags
 }
