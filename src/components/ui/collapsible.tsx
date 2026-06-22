@@ -45,6 +45,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
+    paddingLeft: Spacing.two,
+    paddingVertical: Spacing.two,
   },
   pressedHeading: {
     opacity: 0.7,

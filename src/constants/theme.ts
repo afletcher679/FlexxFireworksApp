@@ -19,6 +19,7 @@ export const Colors = {
     border: '#D0D0D0',
     accent: '#007AFF',
     accentSoft: '#E8F4FD',
+    tint: '#007AFF',
   },
   dark: {
     text: '#ffffff',
@@ -31,6 +32,7 @@ export const Colors = {
     border: '#3A3A3E',
     accent: '#0A84FF',
     accentSoft: '#1F3A52',
+    tint: '#0A84FF',
   },
 } as const;
 

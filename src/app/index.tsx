@@ -1,37 +1,86 @@
-import { useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { useMemo, useState, useEffect } from 'react';
+import { ScrollView, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import productsData from '@/data/products.json';
-import type { Firework } from '@/types';
+import { supabase, testConnection } from '@/lib/supabase';
+import type { Firework, Category } from '@/types';
 import { useProductFilter } from '../hooks/use-product-filter';
 import { SearchBar } from '@/components/search-bar';
 import { FilterPanel } from '@/components/filter-panel';
 import { ProductList } from '@/components/product-list';
-import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
-import { BottomTabInset, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { Link } from 'expo-router';
+import { ThemedText } from '@/components/themed-text';
 
-const products: Firework[] = productsData as Firework[];
 
 export default function CatalogScreen() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
+  const [products, setProducts] = useState<Firework[]>([]);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch products from Supabase
+  useEffect(() => {
+
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('products')
+          .select('*');
+
+        if (error) throw error;
+       // Transform and validate the data
+      const typedData = (data || []) as Firework[];
+    
+        setProducts(typedData);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
   const { filters, setFilters, sortKey, setSortKey, filteredProducts } =
     useProductFilter(products);
 
-  const maxPriceCeiling = useMemo(() => {
-    return Math.ceil(Math.max(...products.map(p => p.price)));
-  }, []);
+const maxPriceCeiling = useMemo(() => {
+  if (products.length === 0) return 100;
+  return Math.ceil(Math.max(...products.map(p => p.price)));
+}, [products]);
 
+
+if (loading) {
+    return (
+      <ThemedView style={[styles.container, { backgroundColor: theme.background }, { paddingTop: insets.top + Spacing.six }, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={theme.tint} />
+      </ThemedView>
+    );
+  }
   return (
     <ThemedView style={[styles.container, { backgroundColor: theme.background }, { paddingTop: insets.top + Spacing.six }]}>
        {/* Sticky controls section - OUTSIDE ScrollView */}
        
       <ThemedView style={[styles.stickyControls, { borderBottomColor: theme.border }]}>
+        <Link href="/add-product" asChild>
+  <Pressable onPress={() => console.log('Navigating to Add Product screen')} style={({ pressed }) => [
+    {
+      backgroundColor: theme.accent,
+      paddingHorizontal: Spacing.three,
+      paddingVertical: Spacing.one,
+      borderRadius: 4,
+    },
+    pressed && { opacity: 0.8 },
+  ]}>
+    <ThemedText>TEST BUTTON</ThemedText>
+  </Pressable>
+</Link>
+
         <Collapsible title="Search, Filter, and Sort">
           <SearchBar
             query={filters.query}
