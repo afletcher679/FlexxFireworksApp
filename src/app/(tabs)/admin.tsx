@@ -212,7 +212,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    maxWidth: 800,
     flexGrow: 1,
     width: '100%',
   },

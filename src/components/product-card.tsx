@@ -7,8 +7,20 @@
 
 import { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { Audio, Video } from 'expo-av';
 import { useTheme } from '@/hooks/use-theme';
+import { Collapsible } from '@/components/ui/collapsible';
 import type { Firework } from '@/types';
+
+// Map video file paths to require statements for local assets
+const videoAssets: Record<string, any> = {
+  '/assets/videos/Double_horror_36_shot.mp4': require('@/assets/videos/Double_horror_36_shot.mp4'),
+  '/assets/videos/Kush_66_shot.mp4': require('@/assets/videos/Kush_66_shot.mp4'),
+  '/assets/videos/Liberation_Day_300_shot.mp4': require('@/assets/videos/Liberation_Day_300_shot.mp4'),
+  '/assets/videos/stage_1_49_shots.mp4': require('@/assets/videos/stage_1_49_shots.mp4'),
+  '/assets/videos/stargazing_100shots.mp4': require('@/assets/videos/stargazing_100shots.mp4'),
+  // Add more videos here as needed
+};
 
 
 interface ProductCardProps {
@@ -89,6 +101,18 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 12,
   },
+  // Video player styling
+  videoContainer: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    borderRadius: 10,
+    marginBottom: 12,
+    overflow: 'hidden',
+  },
+  video: {
+    width: '100%',
+    height: '100%',
+  },
   // Toggle button styling
   expandButton: {
     paddingVertical: 12,
@@ -107,7 +131,23 @@ const styles = StyleSheet.create({
 export function ProductCard({ product }: ProductCardProps) {
   // Track expanded/collapsed state for additional details
   const [expanded, setExpanded] = useState(false);
+  const [videoExpanded, setVideoExpanded] = useState(false);
   const theme = useTheme();
+
+  // Helper function to get video source
+  const getVideoSource = () => {
+    if (!product.videoUrl) return null;
+    
+    const required = videoAssets[product.videoUrl];
+    if (required) {
+      console.log('Using required video:', product.videoUrl);
+      return required;
+    }
+    
+    // Fallback to URI
+    console.log('Using URI fallback:', product.videoUrl);
+    return { uri: product.videoUrl };
+  };
 
   // Dynamic styles based on theme
   const themedStyles = {
@@ -155,6 +195,24 @@ export function ProductCard({ product }: ProductCardProps) {
         <Text style={themedStyles.description}>{product.description}</Text>
       )}
 
+      {/* Video player if videoUrl is available */}
+      {product.videoUrl && getVideoSource() && (
+        <Collapsible title={videoExpanded ? 'Hide Demo' : 'Show Demo'} expanded={videoExpanded} onToggle={() => setVideoExpanded(!videoExpanded)}>
+          <View style={styles.videoContainer}>
+            <Video
+              source={getVideoSource()}
+              style={styles.video}
+              useNativeControls
+              resizeMode="contain"
+              isLooping={false}
+              onError={(error) => {
+                console.error('Video playback error:', error);
+              }}
+            />
+          </View>
+        </Collapsible>
+      )}
+
       {/* Product tags/labels rendered as individual badges */}
       {product.tags && product.tags.length > 0 && (
         <View style={styles.tagsContainer}>
@@ -166,15 +224,6 @@ export function ProductCard({ product }: ProductCardProps) {
         </View>
       )}
 
-      {/* Toggle button to expand/collapse product details */}
-      <Pressable
-        style={themedStyles.expandButton}
-        onPress={() => setExpanded((prev) => !prev)}
-      >
-        <Text style={styles.expandButtonText}>
-          {expanded ? 'Show Less' : 'Show More'}
-        </Text>
-      </Pressable>
     </View>
   );
 }
