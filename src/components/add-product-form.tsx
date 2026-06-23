@@ -128,8 +128,7 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
           <LabeledInput
             label="Price"
             required
-            placeholder="Enter price"
-            keyboardType="decimal-pad"
+            placeholder="e.g. 40.00 or 3 for 5"
             value={formData.price}
             onChangeText={(text) => setFormData({ ...formData, price: text })}
           />

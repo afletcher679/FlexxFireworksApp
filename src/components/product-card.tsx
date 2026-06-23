@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
 export function ProductCard({ product }: ProductCardProps) {
   // Track expanded/collapsed state for additional details
   const [expanded, setExpanded] = useState(false);
-  const [videoExpanded, setVideoExpanded] = useState(false);
   const theme = useTheme();
 
   // Helper function to get video source
@@ -171,7 +170,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <Text style={themedStyles.productName}>{product.name}</Text>
           {product.brand && <Text style={themedStyles.productBrand}>{product.brand}</Text>}
         </View>
-        <Text style={themedStyles.productPrice}>${product.price.toFixed(2)}</Text>
+        <Text style={themedStyles.productPrice}>${product.price}</Text>
       </View>
 
       {/* Meta information: category and duration */}
@@ -197,13 +196,13 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {/* Video player if videoUrl is available */}
       {product.videoUrl && getVideoSource() && (
-        <Collapsible title={videoExpanded ? 'Hide Demo' : 'Show Demo'} expanded={videoExpanded} onToggle={() => setVideoExpanded(!videoExpanded)}>
+        <Collapsible title="→ Show Demo">
           <View style={styles.videoContainer}>
             <Video
               source={getVideoSource()}
               style={styles.video}
               useNativeControls
-              resizeMode="contain"
+              progressUpdateIntervalMillis={500}
               isLooping={false}
               onError={(error) => {
                 console.error('Video playback error:', error);

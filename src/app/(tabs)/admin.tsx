@@ -67,7 +67,7 @@ const router = useRouter();
           name: updatedProduct.name,
           brand: updatedProduct.brand || null,
           category: updatedProduct.category,
-          price: updatedProduct.price,
+          price: updatedProduct.price.toString(),
           description: updatedProduct.description,
           durationSeconds: updatedProduct.durationSeconds,
           stock: updatedProduct.stock,

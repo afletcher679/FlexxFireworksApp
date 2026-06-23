@@ -12,7 +12,11 @@ export type Category =
   | 'Mortar'
   | 'Sparkler'
   | 'Novelty'
-  | 'Rocket';
+  | 'Rocket'
+  | 'Candle'
+  | 'Firecracker'
+  | 'Missile base'
+  | 'Single shot';
 
 /**
  * Firework interface
@@ -23,7 +27,7 @@ export interface Firework {
   name: string; // Product name
   brand?: string; // Manufacturer brand (optional)
   category: Category; // Product category
-  price: number; // Price in dollars
+  price: string; // Price as string (can be "40.00", "3 for 5", etc.)
   durationSeconds: number; // Duration of the effect in seconds
   description: string; // Detailed product description
   videoUrl?: string; // URL to product video (optional)

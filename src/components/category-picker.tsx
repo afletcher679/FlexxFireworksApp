@@ -1,12 +1,12 @@
+import { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { getCategories } from '@/lib/categories';
 import { Category } from '@/types';
-
-const CATEGORIES: Category[] = ['Cake', 'Fountain', 'Roman Candle', 'Mortar', 'Sparkler', 'Novelty', 'Rocket'];
 
 interface CategoryPickerProps {
   value: string;
@@ -16,6 +16,22 @@ interface CategoryPickerProps {
 
 export function CategoryPicker({ value, onValueChange, required }: CategoryPickerProps) {
   const theme = useTheme();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const cats = await getCategories();
+        setCategories(cats);
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadCategories();
+  }, []);
 
   return (
     <ThemedView style={styles.container}>
@@ -33,9 +49,13 @@ export function CategoryPicker({ value, onValueChange, required }: CategoryPicke
         itemStyle={{ color: theme.text }}
       >
         <Picker.Item label="Select a category" value="" />
-        {CATEGORIES.map((category) => (
-          <Picker.Item key={category} label={category} value={category} />
-        ))}
+        {isLoading ? (
+          <Picker.Item label="Loading..." value="" />
+        ) : (
+          categories.map((category) => (
+            <Picker.Item key={category} label={category} value={category} />
+          ))
+        )}
       </Picker>
     </ThemedView>
   );

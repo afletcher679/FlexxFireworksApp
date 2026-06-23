@@ -100,7 +100,7 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
             <ThemedText themeColor="textSecondary">Brand: {product.brand}</ThemedText>
           )}
           <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
-          <ThemedText style={styles.price}>${product.price.toFixed(2)}</ThemedText>
+          <ThemedText style={styles.price}>${product.price}</ThemedText>
           <ThemedText themeColor="textSecondary">Duration: {product.durationSeconds}s</ThemedText>
           <ThemedText themeColor="textSecondary">Stock: {product.stock}</ThemedText>
           {product.tags && product.tags.length > 0 && (
@@ -187,12 +187,11 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
               styles.input,
               { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
             ]}
-            placeholder="Price"
+            placeholder="Price (e.g. 40.00 or 3 for 5)"
             placeholderTextColor={theme.textMuted}
-            keyboardType="decimal-pad"
-            value={editedProduct.price.toString()}
+            value={editedProduct.price}
             onChangeText={(text) =>
-              setEditedProduct({ ...editedProduct, price: parseFloat(text) || 0 })
+              setEditedProduct({ ...editedProduct, price: text })
             }
           />
 
