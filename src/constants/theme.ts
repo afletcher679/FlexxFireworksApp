@@ -18,7 +18,10 @@ export const Colors = {
     inputBackground: '#FAFAFA',
     border: '#D0D0D0',
     accent: '#007AFF',
+    accentSecondary: '#FF9500',
     accentSoft: '#E8F4FD',
+    success: '#34C759',
+    error: '#FF3B30',
     tint: '#007AFF',
   },
   dark: {
@@ -31,7 +34,10 @@ export const Colors = {
     inputBackground: '#1A1A1E',
     border: '#3A3A3E',
     accent: '#0A84FF',
+    accentSecondary: '#FF9500',
     accentSoft: '#1F3A52',
+    success: '#34C759',
+    error: '#FF453A',
     tint: '#0A84FF',
   },
 } as const;

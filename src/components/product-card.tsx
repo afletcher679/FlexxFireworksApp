@@ -6,11 +6,11 @@
 // - Expandable details with a toggle button
 
 import { useState } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { Audio, Video } from 'expo-av';
-import { useTheme } from '@/hooks/use-theme';
+import { View, Text, StyleSheet } from 'react-native';
+import { Video } from 'expo-av';
 import { Collapsible } from '@/components/ui/collapsible';
 import type { Firework } from '@/types';
+import { useTheme } from '@/hooks/use-theme';
 
 // Map video file paths to require statements for local assets
 const videoAssets: Record<string, any> = {
@@ -106,12 +106,14 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 16 / 9,
     borderRadius: 10,
-    marginBottom: 12,
     overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   video: {
     width: '100%',
     height: '100%',
+    borderRadius: 10,
   },
   // Toggle button styling
   expandButton: {
@@ -129,8 +131,8 @@ const styles = StyleSheet.create({
 });
 
 export function ProductCard({ product }: ProductCardProps) {
-  // Track expanded/collapsed state for additional details
-  const [expanded, setExpanded] = useState(false);
+  // Track video shown state
+  const [isVideoShown, setIsVideoShown] = useState(false);
   const theme = useTheme();
 
   // Helper function to get video source
@@ -163,7 +165,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <View style={themedStyles.card}>
+    <View style={[themedStyles.card, { borderColor: theme.accentSecondary, borderWidth: 1 }]}>
       {/* Header section with product name/brand and price */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
@@ -193,14 +195,16 @@ export function ProductCard({ product }: ProductCardProps) {
       {product.description && (
         <Text style={themedStyles.description}>{product.description}</Text>
       )}
-
-      {/* Video player if videoUrl is available */}
-      {product.videoUrl && getVideoSource() && (
-        <Collapsible title="→ Show Demo">
+      
+      {product.videoUrl && (
+        <Collapsible title={isVideoShown ? 'Hide Demo' : 'Show Demo'}>
           <View style={styles.videoContainer}>
             <Video
               source={getVideoSource()}
-              style={styles.video}
+              style={[styles.video, { 
+    borderColor: theme.accent, borderWidth: 1, borderRadius: 10 }]}
+              resizeMode="contain"
+              shouldPlay={false}
               useNativeControls
               progressUpdateIntervalMillis={500}
               isLooping={false}
@@ -215,7 +219,7 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Product tags/labels rendered as individual badges */}
       {product.tags && product.tags.length > 0 && (
         <View style={styles.tagsContainer}>
-          {product.tags.map((tag) => (
+          {product.tags.map((tag: string) => (
             <View key={tag} style={themedStyles.tag}>
               <Text style={themedStyles.tagText}>{tag}</Text>
             </View>

@@ -64,6 +64,7 @@ if (loading) {
   }
   return (
     <ThemedView style={[styles.container, { backgroundColor: theme.background }, { paddingTop: insets.top + Spacing.six }]}>
+      <ThemedText style={{ color: theme.textMuted, textAlign: 'center' }}>{products.length} products</ThemedText>
        {/* Sticky controls section - OUTSIDE ScrollView */}
        
       <ThemedView style={[styles.stickyControls, { borderBottomColor: theme.border }]}>

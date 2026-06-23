@@ -1,7 +1,8 @@
 import { SymbolView } from 'expo-symbols';
-import { PropsWithChildren, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import Animated, { FadeIn, interpolate, useAnimatedStyle, Extrapolation } from 'react-native-reanimated';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -11,6 +12,27 @@ import { useTheme } from '@/hooks/use-theme';
 export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const theme = useTheme();
+  const rotation = useSharedValue(0);
+
+  // Sync rotation animation with isOpen state
+  useEffect(() => {
+    rotation.value = withTiming(isOpen ? 1 : 0, { duration: 300 });
+  }, [isOpen]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotate: interpolate(
+            rotation.value,
+            [0, 1],
+            [0, 90],
+            Extrapolation.CLAMP
+          ) + 'deg',
+        },
+      ],
+    };
+  });
 
   return (
     <ThemedView>
@@ -18,13 +40,14 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
         style={({ pressed }) => [styles.heading, pressed && styles.pressedHeading]}
         onPress={() => setIsOpen((value) => !value)}>
         <ThemedView type="backgroundElement" style={styles.button}>
-          <SymbolView
-            name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
-            size={14}
-            weight="bold"
-            tintColor={theme.text}
-            style={{ transform: [{ rotate: isOpen ? '-90deg' : '90deg' }] }}
-          />
+          <Animated.View style={animatedStyle}>
+            <SymbolView
+              name={{ ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' }}
+              size={14}
+              weight="bold"
+              tintColor={theme.text}
+            />
+          </Animated.View>
         </ThemedView>
 
         <ThemedText type="small">{title}</ThemedText>
@@ -61,7 +84,10 @@ const styles = StyleSheet.create({
   content: {
     marginTop: Spacing.three,
     borderRadius: Spacing.three,
-    marginLeft: Spacing.four,
-    padding: Spacing.four,
+    padding: Spacing.two,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    flexDirection: 'column',
   },
 });
