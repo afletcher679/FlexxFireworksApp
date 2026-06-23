@@ -4,6 +4,9 @@ import { StyleSheet, TextInput, Pressable, Alert } from 'react-native';
 import { Firework } from '@/types';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { LabeledInput } from '@/components/labeled-input';
+import { CategoryPicker } from '@/components/category-picker';
+import { Toast, type ToastType } from '@/components/toast';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { Collapsible } from '@/components/ui/collapsible';
@@ -20,10 +23,15 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
   const [editedProduct, setEditedProduct] = useState(product);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<ToastType>('info');
+  const [showToast, setShowToast] = useState(false);
 
   const handleSave = async () => {
     if (!editedProduct.name || !editedProduct.price || !editedProduct.category) {
-      Alert.alert('Error', 'Please fill in name, price, and category');
+      setToastMessage('Please fill in name, price, and category');
+      setToastType('error');
+      setShowToast(true);
       return;
     }
 
@@ -31,9 +39,13 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
     try {
       await onUpdate(editedProduct);
       setIsEditing(false);
-      Alert.alert('Success', 'Product updated');
+      setToastMessage('Product updated successfully!');
+      setToastType('success');
+      setShowToast(true);
     } catch (error) {
-      Alert.alert('Error', 'Failed to update product');
+      setToastMessage('Failed to update product');
+      setToastType('error');
+      setShowToast(true);
       console.error(error);
     } finally {
       setIsSaving(false);
@@ -53,9 +65,13 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
             setIsDeleting(true);
             try {
               await onDelete(product.id);
-              Alert.alert('Success', 'Product deleted');
+              setToastMessage('Product deleted successfully!');
+              setToastType('success');
+              setShowToast(true);
             } catch (error) {
-              Alert.alert('Error', 'Failed to delete product');
+              setToastMessage('Failed to delete product');
+              setToastType('error');
+              setShowToast(true);
               console.error(error);
             } finally {
               setIsDeleting(false);
@@ -158,17 +174,12 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
             }
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Category"
-            placeholderTextColor={theme.textMuted}
+          <CategoryPicker
             value={editedProduct.category}
-            onChangeText={(text) =>
+            onValueChange={(text) =>
               setEditedProduct({ ...editedProduct, category: text as any })
             }
+            required
           />
 
           <TextInput
@@ -283,7 +294,16 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
             </Pressable>
           </ThemedView>
         </ThemedView>
-    </ThemedView>
+
+
+    {showToast && (
+      <Toast
+        message={toastMessage}
+        type={toastType}
+        onDismiss={() => setShowToast(false)}
+      />
+    )}
+        </ThemedView>
   );
 }
 

@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, TextInput, Pressable, Alert } from 'react-native';
+import { StyleSheet, Pressable, Alert } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { LabeledInput } from '@/components/labeled-input';
+import { CategoryPicker } from '@/components/category-picker';
+import { Toast, type ToastType } from '@/components/toast';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { Collapsible } from '@/components/ui/collapsible';
@@ -26,6 +29,9 @@ interface AddProductFormProps {
 export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: AddProductFormProps) {
   const theme = useTheme();
   const [isSaving, setIsSaving] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<ToastType>('info');
+  const [showToast, setShowToast] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     brand: '',
@@ -36,18 +42,23 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
     stock: '',
     tags: '',
     videoUrl: '',
+    imageUrl: '',
   });
 
   const handleSubmit = async () => {
     if (!formData.name || !formData.price || !formData.category) {
-      Alert.alert('Error', 'Please fill in name, price, and category');
+      setToastMessage('Please fill in name, price, and category');
+      setToastType('error');
+      setShowToast(true);
       return;
     }
 
     setIsSaving(true);
     try {
       await onAddProduct(formData);
-      Alert.alert('Success', 'Product added');
+      setToastMessage('Product added successfully!');
+      setToastType('success');
+      setShowToast(true);
       setFormData({
         name: '',
         brand: '',
@@ -58,12 +69,15 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
         stock: '',
         tags: '',
         videoUrl: '',
+        imageUrl: '',
       });
       if (onOpenChange) {
         onOpenChange(false);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to add product');
+      setToastMessage('Failed to add product');
+      setToastType('error');
+      setShowToast(true);
       console.error(error);
     } finally {
       setIsSaving(false);
@@ -81,114 +95,88 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
       stock: '',
       tags: '',
       videoUrl: '',
+      imageUrl: '',
     });
   };
 
   return (
 
         <ThemedView style={[styles.formContainer]}>
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Product name *"
-            placeholderTextColor={theme.textMuted}
+          
+
+          <LabeledInput
+            label="Product Name"
+            required
+            placeholder="Enter product name"
             value={formData.name}
             onChangeText={(text) => setFormData({ ...formData, name: text })}
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Brand"
-            placeholderTextColor={theme.textMuted}
+          <LabeledInput
+            label="Brand"
+            placeholder="Enter brand name"
             value={formData.brand}
             onChangeText={(text) => setFormData({ ...formData, brand: text })}
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Category *"
-            placeholderTextColor={theme.textMuted}
+          <CategoryPicker
             value={formData.category}
-            onChangeText={(text) => setFormData({ ...formData, category: text })}
+            onValueChange={(text) => setFormData({ ...formData, category: text })}
+            required
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Price *"
-            placeholderTextColor={theme.textMuted}
+          <LabeledInput
+            label="Price"
+            required
+            placeholder="Enter price"
             keyboardType="decimal-pad"
             value={formData.price}
             onChangeText={(text) => setFormData({ ...formData, price: text })}
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Duration (seconds)"
-            placeholderTextColor={theme.textMuted}
+          <LabeledInput
+            label="Duration (seconds)"
+            placeholder="Enter duration"
             keyboardType="number-pad"
             value={formData.durationSeconds}
             onChangeText={(text) => setFormData({ ...formData, durationSeconds: text })}
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Stock quantity"
-            placeholderTextColor={theme.textMuted}
+          <LabeledInput
+            label="Stock Quantity"
+            placeholder="Enter stock amount"
             keyboardType="number-pad"
             value={formData.stock}
             onChangeText={(text) => setFormData({ ...formData, stock: text })}
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Description"
-            placeholderTextColor={theme.textMuted}
+          <LabeledInput
+            label="Description"
+            placeholder="Enter product description"
             value={formData.description}
             onChangeText={(text) => setFormData({ ...formData, description: text })}
             multiline
             numberOfLines={3}
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Tags (comma-separated)"
-            placeholderTextColor={theme.textMuted}
+          <LabeledInput
+            label="Tags"
+            placeholder="comma-separated tags"
             value={formData.tags}
             onChangeText={(text) => setFormData({ ...formData, tags: text })}
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Video URL (optional)"
-            placeholderTextColor={theme.textMuted}
+          <LabeledInput
+            label="Video URL"
+            placeholder="Optional video URL"
             value={formData.videoUrl}
             onChangeText={(text) => setFormData({ ...formData, videoUrl: text })}
+          />
+          <LabeledInput
+            label="Image URL"
+            placeholder="Optional image URL"
+            value={formData.imageUrl}
+            onChangeText={(text) => setFormData({ ...formData, imageUrl: text })}
           />
 
           <ThemedView style={styles.buttonGroup}>
@@ -216,24 +204,27 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
               <ThemedText style={styles.resetButtonText}>Reset</ThemedText>
             </Pressable>
           </ThemedView>
-        </ThemedView>
+
+
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            type={toastType}
+            onDismiss={() => setShowToast(false)}
+          />
+        )}
+     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     borderRadius: 8,
-    padding: Spacing.one,
+    padding: Spacing.four,
   },
   formContainer: {
     gap: Spacing.two,
-    padding: Spacing.two,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 6,
-    padding: Spacing.two,
-    fontSize: 14,
+    padding: Spacing.four,
   },
   buttonGroup: {
     flexDirection: 'row',

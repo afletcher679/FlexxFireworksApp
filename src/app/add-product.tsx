@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -50,14 +50,18 @@ export default function AddProductPage() {
   };
 
   return (
+    <ThemedView style={styles.container}>
+      <ThemedView style={[styles.header, { paddingTop: insets.top }, { paddingLeft: Spacing.three }]}>
+    <Pressable onPress={() => router.push('/admin')} style={styles.backButton}>
+      <ThemedText style={styles.backArrow}>‹</ThemedText>
+      <ThemedText style={styles.backLabel}>Admin</ThemedText>
+    </Pressable>
+    <ThemedText type="subtitle">Add New Product</ThemedText>
+  </ThemedView>
     <ScrollView
       style={[styles.scrollView, { backgroundColor: theme.background }]}
       contentInset={{ top: insets.top, bottom: insets.bottom }}
       contentContainerStyle={styles.contentContainer}>
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.header}>
-          <ThemedText type="subtitle">Add New Product</ThemedText>
-        </ThemedView>
 
         <ThemedView style={styles.formWrapper}>
           <AddProductForm
@@ -66,8 +70,9 @@ export default function AddProductPage() {
             onOpenChange={() => router.back()}
           />
         </ThemedView>
-      </ThemedView>
+
     </ScrollView>
+    </ThemedView>
   );
 }
 
@@ -80,11 +85,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    maxWidth: 800,
     flexGrow: 1,
     width: '100%',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.four,
   },
   header: {
     marginBottom: Spacing.four,
@@ -92,4 +94,17 @@ const styles = StyleSheet.create({
   formWrapper: {
     width: '100%',
   },
+  backButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: Spacing.one,
+  marginBottom: Spacing.two,
+},
+backArrow: {
+  fontSize: 28,
+  lineHeight: 30,
+},
+backLabel: {
+  fontSize: 16,
+},
 });

@@ -29,4 +29,5 @@ export interface Firework {
   videoUrl?: string; // URL to product video (optional)
   stock: number; // Number of items in stock
   tags?: string[]; // Array of searchable tags
+  image_url?: string; // URL to product image (optional)
 }
