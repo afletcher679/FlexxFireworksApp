@@ -29,7 +29,7 @@ export default function CatalogScreen() {
       try {
         setLoading(true);
         const { data, error } = await supabase
-          .from('products')
+          .from('fireworks')
           .select('*');
 
         if (error) throw error;
@@ -38,7 +38,7 @@ export default function CatalogScreen() {
     
         setProducts(typedData);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching fireworks:', error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +51,7 @@ export default function CatalogScreen() {
 
 const maxPriceCeiling = useMemo(() => {
   if (products.length === 0) return 100;
-  return Math.ceil(Math.max(...products.map(p => p.price)));
+  return Math.ceil(Math.max(...products.map(p => parseFloat(p.price as unknown as string))));
 }, [products]);
 
 
@@ -64,7 +64,7 @@ if (loading) {
   }
   return (
     <ThemedView style={[styles.container, { backgroundColor: theme.background }, { paddingTop: insets.top + Spacing.six }]}>
-      <ThemedText style={{ color: theme.textMuted, textAlign: 'center' }}>{products.length} products</ThemedText>
+      <ThemedText style={{ color: theme.textMuted, textAlign: 'center' }}>{products.length} fireworks</ThemedText>
        {/* Sticky controls section - OUTSIDE ScrollView */}
        
       <ThemedView style={[styles.stickyControls, { borderBottomColor: theme.border }]}>

@@ -7,18 +7,19 @@
 
 import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Video } from 'expo-av';
+import { VideoView, useVideoPlayer } from 'expo-video';
 import { Collapsible } from '@/components/ui/collapsible';
 import type { Firework } from '@/types';
 import { useTheme } from '@/hooks/use-theme';
+import { ProductVideo } from '@/components/product-video';
 
 // Map video file paths to require statements for local assets
 const videoAssets: Record<string, any> = {
-  '/assets/videos/Double_horror_36_shot.mp4': require('@/assets/videos/Double_horror_36_shot.mp4'),
-  '/assets/videos/Kush_66_shot.mp4': require('@/assets/videos/Kush_66_shot.mp4'),
-  '/assets/videos/Liberation_Day_300_shot.mp4': require('@/assets/videos/Liberation_Day_300_shot.mp4'),
-  '/assets/videos/stage_1_49_shots.mp4': require('@/assets/videos/stage_1_49_shots.mp4'),
-  '/assets/videos/stargazing_100shots.mp4': require('@/assets/videos/stargazing_100shots.mp4'),
+  'Double_horror_36_shot.mp4': require('@/assets/videos/Double_horror_36_shot.mp4'),
+  'Kush_66_shot.mp4': require('@/assets/videos/Kush_66_shot.mp4'),
+  'Liberation_Day_300_shot.mp4': require('@/assets/videos/Liberation_Day_300_shot.mp4'),
+  'stage_1_49_shots.mp4': require('@/assets/videos/stage_1_49_shots.mp4'),
+  'stargazing_100shots.mp4': require('@/assets/videos/stargazing_100shots.mp4'),
   // Add more videos here as needed
 };
 
@@ -26,6 +27,97 @@ const videoAssets: Record<string, any> = {
 interface ProductCardProps {
   product: Firework; // The firework product to display
 }
+
+export function ProductCard({ product }: ProductCardProps) {
+  // Track video shown state
+  const [isVideoShown, setIsVideoShown] = useState(false);
+  const theme = useTheme();
+
+    // Helper function to get video source
+  const getVideoSource = () => {
+    if (!product.video_url) return null;
+    
+    const required = videoAssets[product.video_url];
+    if (required) {
+      return required;
+    }
+    
+    // Fallback to URI
+    console.log('Using URI fallback:', product.video_url);
+    return { uri: product.video_url };
+  };
+
+  // Dynamic styles based on theme
+  const themedStyles = {
+    card: [styles.card, { backgroundColor: theme.background, borderColor: theme.border }],
+    metaBadge: [styles.metaBadge, { backgroundColor: theme.inputBackground }],
+    metaBadgeText: [styles.metaBadgeText, { color: theme.textMuted }],
+    productName: [styles.productName, { color: theme.text }],
+    productBrand: [styles.productBrand, { color: theme.textMuted }],
+    productPrice: [styles.productPrice, { color: theme.accent }],
+    description: [styles.description, { color: theme.text }],
+    tag: [styles.tag, { backgroundColor: theme.inputBackground }],
+    tagText: [styles.tagText, { color: theme.textMuted }],
+    expandButton: [styles.expandButton, { backgroundColor: theme.accent }],
+  };
+
+  return (
+    <View style={[themedStyles.card, { borderColor: theme.accentSecondary, borderWidth: 1 }]}>
+      {/* Header section with product name/brand and price */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <Text style={themedStyles.productName}>{product.name}</Text>
+          {product.type && <Text style={themedStyles.productBrand}>{product.type}</Text>}
+        </View>
+        <Text style={themedStyles.productPrice}>${product.price}</Text>
+      </View>
+
+      {/* Meta information: category and duration */}
+      <View style={styles.meta}>
+        <View style={themedStyles.metaBadge}>
+          <Text style={themedStyles.metaBadgeText}>
+            {product.category.replace('-', ' ')}
+          </Text>
+        </View>
+        {product.durationSeconds && (
+          <View style={themedStyles.metaBadge}>
+            <Text style={themedStyles.metaBadgeText}>
+              {product.durationSeconds} seconds
+            </Text>
+          </View>
+        )}
+      </View>
+
+      {/* Optional description field */}
+      {product.description && (
+        <Text style={themedStyles.description}>{product.description}</Text>
+      )}
+      
+      {product.video_url && (
+        <Collapsible title={isVideoShown ? 'Hide Demo' : 'Show Demo'}>
+          <View style={[styles.videoContainer, { width: '100%', alignItems: 'center', justifyContent: 'center' }]}>
+            <ProductVideo source={getVideoSource()} />
+          </View>
+        </Collapsible>
+      )}
+
+      {/* Product effects/labels rendered as individual badges */}
+      {product.effects && product.effects.length > 0 && (
+        <View style={styles.tagsContainer}>
+          {product.effects.map((effect: string) => (
+            <View key={effect} style={themedStyles.tag}>
+              <Text style={themedStyles.tagText}>{effect}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+    </View>
+  );
+}
+
+export default ProductCard;
+
 
 const styles = StyleSheet.create({
   // Main card container
@@ -102,19 +194,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   // Video player styling
-  videoContainer: {
-    width: '100%',
-    aspectRatio: 16 / 9,
-    borderRadius: 10,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  video: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 10,
-  },
+videoContainer: {
+  alignSelf: 'stretch',   // ← replaces width: '100%'
+  aspectRatio: 16 / 9,
+  borderRadius: 10,
+  overflow: 'hidden',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+
   // Toggle button styling
   expandButton: {
     paddingVertical: 12,
@@ -129,106 +217,3 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 });
-
-export function ProductCard({ product }: ProductCardProps) {
-  // Track video shown state
-  const [isVideoShown, setIsVideoShown] = useState(false);
-  const theme = useTheme();
-
-  // Helper function to get video source
-  const getVideoSource = () => {
-    if (!product.videoUrl) return null;
-    
-    const required = videoAssets[product.videoUrl];
-    if (required) {
-      console.log('Using required video:', product.videoUrl);
-      return required;
-    }
-    
-    // Fallback to URI
-    console.log('Using URI fallback:', product.videoUrl);
-    return { uri: product.videoUrl };
-  };
-
-  // Dynamic styles based on theme
-  const themedStyles = {
-    card: [styles.card, { backgroundColor: theme.background, borderColor: theme.border }],
-    metaBadge: [styles.metaBadge, { backgroundColor: theme.inputBackground }],
-    metaBadgeText: [styles.metaBadgeText, { color: theme.textMuted }],
-    productName: [styles.productName, { color: theme.text }],
-    productBrand: [styles.productBrand, { color: theme.textMuted }],
-    productPrice: [styles.productPrice, { color: theme.accent }],
-    description: [styles.description, { color: theme.text }],
-    tag: [styles.tag, { backgroundColor: theme.inputBackground }],
-    tagText: [styles.tagText, { color: theme.textMuted }],
-    expandButton: [styles.expandButton, { backgroundColor: theme.accent }],
-  };
-
-  return (
-    <View style={[themedStyles.card, { borderColor: theme.accentSecondary, borderWidth: 1 }]}>
-      {/* Header section with product name/brand and price */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Text style={themedStyles.productName}>{product.name}</Text>
-          {product.brand && <Text style={themedStyles.productBrand}>{product.brand}</Text>}
-        </View>
-        <Text style={themedStyles.productPrice}>${product.price}</Text>
-      </View>
-
-      {/* Meta information: category and duration */}
-      <View style={styles.meta}>
-        <View style={themedStyles.metaBadge}>
-          <Text style={themedStyles.metaBadgeText}>
-            {product.category.replace('-', ' ')}
-          </Text>
-        </View>
-        {product.durationSeconds && (
-          <View style={themedStyles.metaBadge}>
-            <Text style={themedStyles.metaBadgeText}>
-              {product.durationSeconds} seconds
-            </Text>
-          </View>
-        )}
-      </View>
-
-      {/* Optional description field */}
-      {product.description && (
-        <Text style={themedStyles.description}>{product.description}</Text>
-      )}
-      
-      {product.videoUrl && (
-        <Collapsible title={isVideoShown ? 'Hide Demo' : 'Show Demo'}>
-          <View style={styles.videoContainer}>
-            <Video
-              source={getVideoSource()}
-              style={[styles.video, { 
-    borderColor: theme.accent, borderWidth: 1, borderRadius: 10 }]}
-              resizeMode="contain"
-              shouldPlay={false}
-              useNativeControls
-              progressUpdateIntervalMillis={500}
-              isLooping={false}
-              onError={(error) => {
-                console.error('Video playback error:', error);
-              }}
-            />
-          </View>
-        </Collapsible>
-      )}
-
-      {/* Product tags/labels rendered as individual badges */}
-      {product.tags && product.tags.length > 0 && (
-        <View style={styles.tagsContainer}>
-          {product.tags.map((tag: string) => (
-            <View key={tag} style={themedStyles.tag}>
-              <Text style={themedStyles.tagText}>{tag}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-    </View>
-  );
-}
-
-export default ProductCard;

@@ -96,15 +96,15 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
         ]}>
         <ThemedView style={styles.displayMode}>
           <ThemedText type="subtitle">{product.name}</ThemedText>
-          {product.brand && (
-            <ThemedText themeColor="textSecondary">Brand: {product.brand}</ThemedText>
+          {product.type && (
+            <ThemedText themeColor="textSecondary">Type: {product.type}</ThemedText>
           )}
           <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
           <ThemedText style={styles.price}>${product.price}</ThemedText>
           <ThemedText themeColor="textSecondary">Duration: {product.durationSeconds}s</ThemedText>
           <ThemedText themeColor="textSecondary">Stock: {product.stock}</ThemedText>
-          {product.tags && product.tags.length > 0 && (
-            <ThemedText themeColor="textSecondary">Tags: {product.tags.join(', ')}</ThemedText>
+          {product.effects && product.effects.length > 0 && (
+            <ThemedText themeColor="textSecondary">Effects: {product.effects.join(', ')}</ThemedText>
           )}
           <ThemedText numberOfLines={2} style={styles.description}>
             {product.description}
@@ -161,19 +161,6 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
             }
           />
 
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Brand"
-            placeholderTextColor={theme.textMuted}
-            value={editedProduct.brand || ''}
-            onChangeText={(text) =>
-              setEditedProduct({ ...editedProduct, brand: text })
-            }
-          />
-
           <CategoryPicker
             value={editedProduct.category}
             onValueChange={(text) =>
@@ -187,7 +174,7 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
               styles.input,
               { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
             ]}
-            placeholder="Price (e.g. 40.00 or 3 for 5)"
+            placeholder="Price (e.g. 40.00 or 3 for $5.00)"
             placeholderTextColor={theme.textMuted}
             value={editedProduct.price}
             onChangeText={(text) =>

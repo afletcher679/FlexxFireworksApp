@@ -25,13 +25,13 @@ export type Category =
 export interface Firework {
   id: number; // Unique identifier for the product
   name: string; // Product name
-  brand?: string; // Manufacturer brand (optional)
   category: Category; // Product category
+  type?: string; // Optional type for further classification
   price: string; // Price as string (can be "40.00", "3 for 5", etc.)
-  durationSeconds: number; // Duration of the effect in seconds
+  duration_seconds: number; // Duration of the effect in seconds
   description: string; // Detailed product description
-  videoUrl?: string; // URL to product video (optional)
-  stock: number; // Number of items in stock
-  tags?: string[]; // Array of searchable tags
+  video_url?: string; // URL to product video (optional)
+  stock_quantity: number; // Number of items in stock
+  effects?: string[]; // Array of searchable effects
   image_url?: string; // URL to product image (optional)
 }

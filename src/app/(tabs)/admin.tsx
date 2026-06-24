@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ScrollView, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { supabase } from '@/lib/supabase';
@@ -11,12 +11,13 @@ import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { Firework } from '@/types';
 
-const ADMIN_PASSWORD = 'test123';
-
 export default function AdminScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [passwordInput, setPasswordInput] = useState('');
   const [products, setProducts] = useState<Firework[]>([]);
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useTheme();
   const insets = {
@@ -31,27 +32,77 @@ const router = useRouter();
     }
   }, [isAuthenticated]);
 
+    // Reset auth state when the tab loses focus
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setIsAuthenticated(false);
+        setEmail('');
+        setPasswordInput('');
+        setLoginError('');
+        setProducts([]);
+        supabase.auth.signOut();
+      };
+    }, [])
+  );
+  
   const fetchProducts = async () => {
     try {
       const { data, error } = await supabase
-        .from('products')
+        .from('fireworks')
         .select('*');
 
       if (error) throw error;
       const typedData = (data || []) as Firework[];
       setProducts(typedData);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error fetching fireworks:', error);
     }
   };
 
-  const handleLogin = () => {
-    if (passwordInput === ADMIN_PASSWORD) {
+const handleLogin = async () => {
+    if (!email || !passwordInput) {
+      Alert.alert('Error', 'Please enter your email and password');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      console.log('Attempting sign in with:', email);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password: passwordInput,
+      });
+
+      console.log('Auth response - data:', JSON.stringify(data), 'error:', JSON.stringify(error));
+
+      if (error) throw error;
+
+      // Check if the signed-in user has the admin role
+      console.log('Checking profile for user id:', data.user.id);
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      console.log('Profile response - data:', JSON.stringify(profile), 'error:', JSON.stringify(profileError));
+
+      if (profileError) throw profileError;
+
+      if (profile.role !== 'admin') {
+        await supabase.auth.signOut();
+        Alert.alert('Access Denied', 'You do not have admin permissions');
+        return;
+      }
+
       setIsAuthenticated(true);
       setPasswordInput('');
-    } else {
-      Alert.alert('Error', 'Incorrect password');
-      setPasswordInput('');
+      setEmail('');
+    } catch (error: any) {
+      console.log('Login error caught:', JSON.stringify(error));
+      setLoginError(error.message || 'Invalid email or password');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -62,17 +113,16 @@ const router = useRouter();
   const handleUpdateProduct = async (updatedProduct: Firework) => {
     try {
       const { error } = await supabase
-        .from('products')
+        .from('fireworks')
         .update({
           name: updatedProduct.name,
-          brand: updatedProduct.brand || null,
           category: updatedProduct.category,
-          price: updatedProduct.price.toString(),
+          price: updatedProduct.price,
           description: updatedProduct.description,
-          durationSeconds: updatedProduct.durationSeconds,
-          stock: updatedProduct.stock,
-          tags: updatedProduct.tags || [],
-          videoUrl: updatedProduct.videoUrl || null,
+          duration_seconds: updatedProduct.duration_seconds,
+          stock_quantity: updatedProduct.stock_quantity,
+          effects: updatedProduct.effects || [],
+          video_url: updatedProduct.video_url || null,
         })
         .eq('id', updatedProduct.id);
 
@@ -87,14 +137,14 @@ const router = useRouter();
   const handleDeleteProduct = async (id: number) => {
     try {
       const { error } = await supabase
-        .from('products')
+        .from('fireworks')
         .delete()
         .eq('id', id);
 
       if (error) throw error;
       fetchProducts();
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error('Error deleting fireworks:', error);
       throw error;
     }
   };
@@ -105,7 +155,7 @@ const router = useRouter();
 
   if (!isAuthenticated) {
     return (
-      <ScrollView
+<ScrollView
         style={[styles.scrollView, { backgroundColor: theme.background }]}
         contentInset={insets}
         contentContainerStyle={styles.contentContainer}>
@@ -115,8 +165,29 @@ const router = useRouter();
               Admin Login
             </ThemedText>
             <ThemedText style={styles.subtitle} themeColor="textSecondary">
-              Enter password to access inventory
+              Sign in to access inventory
             </ThemedText>
+
+            {loginError ? (
+              <ThemedText style={styles.errorText}>{loginError}</ThemedText>
+            ) : null}
+
+            <TextInput
+              style={[
+                styles.passwordInput,
+                {
+                  backgroundColor: theme.backgroundElement,
+                  color: theme.text,
+                  borderColor: loginError ? '#ef4444' : theme.textSecondary,
+                },
+              ]}
+              placeholder="Email"
+              placeholderTextColor={theme.textSecondary}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={(text) => { setLoginError(''); setEmail(text); }}
+            />
 
             <TextInput
               style={[
@@ -127,11 +198,11 @@ const router = useRouter();
                   borderColor: theme.textSecondary,
                 },
               ]}
-              placeholder="Enter password"
+              placeholder="Password"
               placeholderTextColor={theme.textSecondary}
               secureTextEntry={true}
               value={passwordInput}
-              onChangeText={setPasswordInput}
+              onChangeText={(text) => { setLoginError(''); setPasswordInput(text); }}
             />
 
             <Pressable
@@ -140,9 +211,10 @@ const router = useRouter();
                 { backgroundColor: theme.tint },
                 pressed && styles.pressed,
               ]}
-              onPress={handleLogin}>
+              onPress={handleLogin}
+              disabled={isLoading}>
               <ThemedText style={[styles.buttonText, { color: theme.background }]}>
-                Login
+                {isLoading ? 'Signing in...' : 'Login'}
               </ThemedText>
             </Pressable>
           </ThemedView>
@@ -305,5 +377,10 @@ const styles = StyleSheet.create({
     marginTop: Spacing.two,
     padding: Spacing.two,
     borderRadius: Spacing.one,
+  },
+    errorText: {
+    color: '#ef4444',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
