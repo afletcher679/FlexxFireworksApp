@@ -7,23 +7,12 @@
 
 import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { VideoView, useVideoPlayer } from 'expo-video';
 import { Collapsible } from '@/components/ui/collapsible';
 import type { Firework } from '@/types';
 import { useTheme } from '@/hooks/use-theme';
 import { ProductVideo } from '@/components/product-video';
+import { ProductImage } from '@/components/product-image';
 import { ThemedView } from './themed-view';
-
-// Map video file paths to require statements for local assets
-const videoAssets: Record<string, any> = {
-  'Double_horror_36_shot.mp4': require('@/assets/videos/Double_horror_36_shot.mp4'),
-  'Kush_66_shot.mp4': require('@/assets/videos/Kush_66_shot.mp4'),
-  'Liberation_Day_300_shot.mp4': require('@/assets/videos/Liberation_Day_300_shot.mp4'),
-  'stage_1_49_shots.mp4': require('@/assets/videos/stage_1_49_shots.mp4'),
-  'stargazing_100shots.mp4': require('@/assets/videos/stargazing_100shots.mp4'),
-  // Add more videos here as needed
-};
-
 
 interface ProductCardProps {
   product: Firework; // The firework product to display
@@ -33,20 +22,6 @@ export function ProductCard({ product }: ProductCardProps) {
   // Track video shown state
   const [isVideoShown, setIsVideoShown] = useState(false);
   const theme = useTheme();
-
-    // Helper function to get video source
-  const getVideoSource = () => {
-    if (!product.video_url) return null;
-    
-    const required = videoAssets[product.video_url];
-    if (required) {
-      return required;
-    }
-    
-    // Fallback to URI
-    console.log('Using URI fallback:', product.video_url);
-    return { uri: product.video_url };
-  };
 
   // Dynamic styles based on theme
   const themedStyles = {
@@ -64,40 +39,46 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <View style={[themedStyles.card, { borderColor: theme.accentSecondary, borderWidth: 1 }]}>
-      {/* Header section with product name/brand and price */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
+      {/* Image and Info Section */}
+      <View style={styles.contentContainer}>
+        {/* Product Image on the left */}
+        <ProductImage imageUrl={product.image_url} />
+
+        {/* Product Info on the right */}
+        <View style={styles.infoContainer}>
           <Text style={themedStyles.productName}>{product.name}</Text>
-          {product.type && <Text style={themedStyles.productBrand}>{product.type}</Text>}
-        </View>
-        <Text style={themedStyles.productPrice}>${product.price}</Text>
-      </View>
+          <Text style={themedStyles.productPrice}>${product.price}</Text>
 
-      {/* Meta information: category and duration */}
-      <View style={styles.meta}>
-        <View style={themedStyles.metaBadge}>
-          <Text style={themedStyles.metaBadgeText}>
-            {product.category.replace('-', ' ')}
-          </Text>
-        </View>
-        {product.duration_seconds && (
-          <View style={themedStyles.metaBadge}>
-            <Text style={themedStyles.metaBadgeText}>
-              {product.duration_seconds} seconds
-            </Text>
+          {/* Meta information: category and duration */}
+          <View style={styles.meta}>
+            <View style={themedStyles.metaBadge}>
+              <Text style={themedStyles.metaBadgeText}>
+                {product.category.replace('-', ' ')}
+              </Text>
+            </View>
+            {product.type && (
+              <Text style={[themedStyles.productBrand, styles.typeText]}>{product.type}</Text>
+            )}
+            {product.duration_seconds && (
+              <View style={themedStyles.metaBadge}>
+                <Text style={themedStyles.metaBadgeText}>
+                  {product.duration_seconds} seconds
+                </Text>
+              </View>
+            )}
           </View>
-        )}
-      </View>
 
-      {/* Optional description field */}
-      {product.description && (
-        <Text style={themedStyles.description}>{product.description}</Text>
-      )}
+          {/* Optional description field */}
+          {product.description && (
+            <Text style={[themedStyles.description, styles.descriptionText]}>{product.description}</Text>
+          )}
+        </View>
+      </View>
       
       {product.video_url && (
         <Collapsible title={isVideoShown ? 'Hide Demo' : 'Show Demo'} >
           <View style={[styles.videoContainer, {borderColor: theme.accent}]}>
-            <ProductVideo source={getVideoSource()} />
+            <ProductVideo videoUrl={product.video_url} />
           </View>
         </Collapsible>
       )}
@@ -128,16 +109,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
   },
-  // Header section with product name/brand and price
-  header: {
+  // Content container with image and info side by side
+  contentContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
     gap: 12,
     marginBottom: 12,
   },
-  // Left side of header (name and brand)
-  headerLeft: {
+  // Info container (name, price, meta, description)
+  infoContainer: {
     flex: 1,
   },
   // Product name text
@@ -146,22 +125,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 2,
   },
-  // Brand text (if available)
+  // Brand/Type text
   productBrand: {
     fontSize: 13,
-    marginTop: 2,
+    marginBottom: 4,
   },
   // Price text
   productPrice: {
     fontSize: 16,
     fontWeight: '600',
+    marginBottom: 8,
   },
   // Meta information container (category and duration)
   meta: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
-    marginBottom: 12,
+    marginBottom: 8,
   },
   // Category badge styling
   metaBadge: {
@@ -172,11 +152,18 @@ const styles = StyleSheet.create({
   metaBadgeText: {
     fontSize: 12,
   },
+  // Type text styling (displayed inline with meta, no badge)
+  typeText: {
+    marginBottom: 0,
+  },
   // Description text
   description: {
     fontSize: 14,
     lineHeight: 20,
-    marginBottom: 12,
+  },
+  // Description text with spacing
+  descriptionText: {
+    marginTop: 6,
   },
   // Tags container
   tagsContainer: {
@@ -195,17 +182,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   // Video player styling
-videoContainer: {
-  alignSelf: 'stretch',   // ← replaces width: '100%'
-  aspectRatio: 16 / 9,
-  borderRadius: 10,
-  overflow: 'hidden',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '100%',
-  borderWidth: 1,
-},
-
+  videoContainer: {
+    alignSelf: 'stretch',
+    aspectRatio: 16 / 9,
+    borderRadius: 10,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    borderWidth: 1,
+  },
   // Toggle button styling
   expandButton: {
     paddingVertical: 12,
