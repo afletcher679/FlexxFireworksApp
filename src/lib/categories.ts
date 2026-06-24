@@ -9,15 +9,11 @@ let cachedCategories: Category[] | null = null;
  */
 export async function fetchCategoriesFromDatabase(): Promise<Category[]> {
   try {
-    const { data, error } = await supabase
-      .from('information_schema.enums')
-      .select('enumlabel')
-      .eq('enumtypname', 'category')
-      .order('enumsortorder');
+    const { data, error } = await supabase.rpc('get_category_enum_values');
 
     if (error) throw error;
     
-    const categories = data?.map(row => row.enumlabel as Category) || [];
+    const categories = (data as string[]).map(val => val as Category);
     cachedCategories = categories;
     return categories;
   } catch (error) {

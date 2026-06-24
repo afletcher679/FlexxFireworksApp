@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '@/lib/supabase';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { ProductUpdateCard } from '@/components/product-update-card';
+import { ProductUpdateCard } from '@/components/inventory-card';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { Firework } from '@/types';
@@ -258,7 +258,7 @@ const handleLogin = async () => {
         {/* Products List */}
         <ThemedView style={styles.contentArea}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
-            Current Products ({products.length})
+            Current Fireworks ({products.length})
           </ThemedText>
 
           {products.map((product) => (

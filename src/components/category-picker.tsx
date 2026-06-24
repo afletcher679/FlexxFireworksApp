@@ -35,7 +35,7 @@ export function CategoryPicker({ value, onValueChange, required }: CategoryPicke
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.label}>
+      <ThemedText style={[styles.label, { color: theme.accent }]}>
         Category
         {required && <ThemedText style={styles.required}> *</ThemedText>}
       </ThemedText>

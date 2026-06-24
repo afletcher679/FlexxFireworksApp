@@ -14,7 +14,7 @@ export function LabeledInput({ label, required, ...props }: LabeledInputProps) {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.label}>
+      <ThemedText style={[styles.label, { color: theme.accent }]}>
         {label}
         {required && <ThemedText style={styles.required}> *</ThemedText>}
       </ThemedText>
