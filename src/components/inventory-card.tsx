@@ -106,8 +106,8 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
           )}
           <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
           <ThemedText style={styles.price}>${product.price}</ThemedText>
-          <ThemedText themeColor="textSecondary">Duration: {product.duration_seconds}s</ThemedText>
-          <ThemedText themeColor="textSecondary">Stock: {product.stock_quantity}</ThemedText>
+            <ThemedText themeColor="textSecondary">Duration (seconds): {product.duration_seconds ?? 'N/A'}</ThemedText>
+          <ThemedText themeColor="textSecondary">Stock Quantity: {product.stock_quantity ?? 'N/A'}</ThemedText>
           {product.effects && product.effects.length > 0 && (
             <ThemedText themeColor="textSecondary">Effects: {product.effects.join(', ')}</ThemedText>
           )}

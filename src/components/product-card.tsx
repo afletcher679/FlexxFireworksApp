@@ -12,6 +12,7 @@ import { Collapsible } from '@/components/ui/collapsible';
 import type { Firework } from '@/types';
 import { useTheme } from '@/hooks/use-theme';
 import { ProductVideo } from '@/components/product-video';
+import { ThemedView } from './themed-view';
 
 // Map video file paths to require statements for local assets
 const videoAssets: Record<string, any> = {
@@ -79,10 +80,10 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.category.replace('-', ' ')}
           </Text>
         </View>
-        {product.durationSeconds && (
+        {product.duration_seconds && (
           <View style={themedStyles.metaBadge}>
             <Text style={themedStyles.metaBadgeText}>
-              {product.durationSeconds} seconds
+              {product.duration_seconds} seconds
             </Text>
           </View>
         )}
@@ -94,8 +95,8 @@ export function ProductCard({ product }: ProductCardProps) {
       )}
       
       {product.video_url && (
-        <Collapsible title={isVideoShown ? 'Hide Demo' : 'Show Demo'}>
-          <View style={[styles.videoContainer, { width: '100%', alignItems: 'center', justifyContent: 'center' }]}>
+        <Collapsible title={isVideoShown ? 'Hide Demo' : 'Show Demo'} >
+          <View style={[styles.videoContainer, {borderColor: theme.accent}]}>
             <ProductVideo source={getVideoSource()} />
           </View>
         </Collapsible>
@@ -201,6 +202,8 @@ videoContainer: {
   overflow: 'hidden',
   alignItems: 'center',
   justifyContent: 'center',
+  width: '100%',
+  borderWidth: 1,
 },
 
   // Toggle button styling
