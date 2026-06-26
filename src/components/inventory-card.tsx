@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, Pressable, Alert } from 'react-native';
+import { StyleSheet, Pressable, Alert, View } from 'react-native';
 
 import { Firework } from '@/types';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { ProductForm } from '@/components/product-form';
+import { ProductImage } from '@/components/product-image';
 import { Toast, type ToastType } from '@/components/toast';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -99,47 +100,55 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
           styles.cardContainer,
           { backgroundColor: theme.backgroundElement },
         ]}>
-        <ThemedView style={styles.displayMode}>
-          <ThemedText style={[styles.fireworkName, { color: theme.accent }]}>{product.name}</ThemedText>
-          {product.type && (
-            <ThemedText themeColor="textSecondary">Type: {product.type}</ThemedText>
-          )}
-          <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
-          <ThemedText style={styles.price}>${product.price}</ThemedText>
+        {/* Title */}
+        <ThemedText style={[styles.fireworkName, { color: theme.accent }]}>{product.name}</ThemedText>
+        
+        {/* Content Row: Image on left, Data on right */}
+        <ThemedView style={styles.contentRow}>
+          {product.image_url && <ProductImage imageUrl={product.image_url} />}
+          
+          <ThemedView style={styles.displayMode}>
+            {product.type && (
+              <ThemedText themeColor="textSecondary">Type: {product.type}</ThemedText>
+            )}
+            <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
+            <ThemedText style={styles.price}>${product.price}</ThemedText>
             <ThemedText themeColor="textSecondary">Duration (seconds): {product.duration_seconds ?? 'N/A'}</ThemedText>
-          <ThemedText themeColor="textSecondary">Stock Quantity: {product.stock_quantity ?? 'N/A'}</ThemedText>
-          {product.effects && product.effects.length > 0 && (
-            <ThemedText themeColor="textSecondary">Effects: {product.effects.join(', ')}</ThemedText>
-          )}
-          <ThemedText numberOfLines={2} style={styles.description}>
-            {product.description}
-          </ThemedText>
-
-          <ThemedView style={styles.buttonGroup}>
-            <Pressable
-              style={({ pressed }) => [
-                styles.editButton,
-                { backgroundColor: theme.accent },
-                pressed && styles.pressedButton,
-              ]}
-              onPress={() => setIsEditing(true)}>
-              <ThemedText style={[styles.buttonText, { color: theme.background }]}>
-                Edit
-              </ThemedText>
-            </Pressable>
-
-            <Pressable
-              style={({ pressed }) => [
-                styles.deleteButton,
-                pressed && styles.pressedButton,
-              ]}
-              onPress={handleDelete}
-              disabled={isDeleting}>
-              <ThemedText style={styles.deleteButtonText}>
-                {isDeleting ? 'Deleting...' : 'Delete'}
-              </ThemedText>
-            </Pressable>
+            <ThemedText themeColor="textSecondary">Stock Quantity: {product.stock_quantity ?? 'N/A'}</ThemedText>
+            {product.effects && product.effects.length > 0 && (
+              <ThemedText themeColor="textSecondary">Effects: {product.effects.join(', ')}</ThemedText>
+            )}
+            <ThemedText numberOfLines={2} style={styles.description}>
+              {product.description}
+            </ThemedText>
           </ThemedView>
+        </ThemedView>
+        
+        {/* Buttons at bottom */}
+        <ThemedView style={styles.buttonGroup}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.editButton,
+              { backgroundColor: theme.accent },
+              pressed && styles.pressedButton,
+            ]}
+            onPress={() => setIsEditing(true)}>
+            <ThemedText style={[styles.buttonText, { color: theme.background }]}>
+              Edit
+            </ThemedText>
+          </Pressable>
+
+          <Pressable
+            style={({ pressed }) => [
+              styles.deleteButton,
+              pressed && styles.pressedButton,
+            ]}
+            onPress={handleDelete}
+            disabled={isDeleting}>
+            <ThemedText style={styles.deleteButtonText}>
+              {isDeleting ? 'Deleting...' : 'Delete'}
+            </ThemedText>
+          </Pressable>
         </ThemedView>
       </ThemedView>
     );
@@ -169,23 +178,30 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
 const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 8,
+    marginBottom: Spacing.two,
     padding: Spacing.two,
+    flexDirection: 'column',
+    gap: Spacing.two,
+  },
+  contentRow: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+    alignItems: 'center',
   },
   displayMode: {
-    gap: Spacing.two,
-    padding: Spacing.two,
+    flex: 1,
+    gap: Spacing.one,
   },
   price: {
     fontWeight: '600',
     fontSize: 16,
   },
   description: {
-    marginTop: Spacing.two,
+    marginTop: Spacing.one,
   },
   buttonGroup: {
     flexDirection: 'row',
     gap: Spacing.two,
-    marginTop: Spacing.two,
   },
   editButton: {
     flex: 1,

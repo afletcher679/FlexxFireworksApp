@@ -19,7 +19,7 @@ interface FilterPanelProps {
   setFilters: (nextFilters: Filters) => void;
   sortOption: SortOptions;
   setSortOption: (option: SortOptions) => void;
-  maxPriceCeiling: number;
+  maxPriceCeiling?: number;
 }
 
 const styles = StyleSheet.create({
@@ -167,10 +167,12 @@ export function FilterPanel({
 
       {/* Price range slider with dynamic label showing current max */}
       <View style={styles.section}>
-        <Text style={themedStyles.label}>
-          Max Price: ${displayedMax.toFixed(0)}
-          {filters.maxPrice !== null && ' (custom)'}
-        </Text>
+        {maxPriceCeiling !== undefined && (
+          <Text style={themedStyles.label}>
+            Max Price: ${displayedMax.toFixed(0)}
+            {filters.maxPrice !== null && ' (custom)'}
+          </Text>
+        )}
         <View style={styles.sliderContainer}>
           <Slider
             style={styles.slider}

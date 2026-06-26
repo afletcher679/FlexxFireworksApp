@@ -10,6 +10,10 @@ import { ProductUpdateCard } from '@/components/inventory-card';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { Firework } from '@/types';
+import { Collapsible } from '@/components/ui/collapsible';
+import { useProductFilter } from '@/hooks/use-product-filter';
+import { FilterPanel } from '@/components/filter-panel';
+import SearchBar from '@/components/search-bar';
 
 export default function AdminScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -18,6 +22,7 @@ export default function AdminScreen() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
+  
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useTheme();
   const insets = {
@@ -152,7 +157,8 @@ const handleLogin = async () => {
   const handleAddProduct = () => {
     router.push('/add-product');
   };
-
+  const { filters, setFilters, sortKey, setSortKey, filteredProducts } =
+    useProductFilter(products);
   if (!isAuthenticated) {
     return (
 <ScrollView
@@ -256,12 +262,24 @@ const handleLogin = async () => {
         </ThemedView>
 
         {/* Products List */}
+                <Collapsible title="Search, Filter, and Sort">
+                  <SearchBar
+                    query={filters.query}
+                    onQueryChange={query => setFilters({ ...filters, query })}
+                  />
+                  <FilterPanel
+                    filters={filters}
+                    setFilters={setFilters}
+                    sortOption={sortKey}
+                    setSortOption={setSortKey}
+                  />
+                </Collapsible>
         <ThemedView style={styles.contentArea}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             Current Fireworks ({products.length})
           </ThemedText>
 
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductUpdateCard
               key={product.id}
               product={product}

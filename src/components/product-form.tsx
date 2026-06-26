@@ -18,13 +18,7 @@ interface ProductFormData {
   stock_quantity?: number | string;
   effects?: string[];
   video_url?: string;
-  imageUrl?: string;
-  // Legacy fields for compatibility
-  brand?: string;
-  durationSeconds?: string;
-  stock?: string;
-  tags?: string;
-  videoUrl?: string;
+  image_url?: string;
 }
 
 interface ProductFormProps {
@@ -77,7 +71,7 @@ export function ProductForm({
         label="Product Name"
         required
         placeholder="Enter product name"
-        value={formData.name}
+        value={formData.name || ''}
         onChangeText={(text) => handleFieldChange('name', text)}
       />
 
@@ -100,7 +94,7 @@ export function ProductForm({
         label="Price"
         required
         placeholder="e.g. 40.00 or 3 for 5"
-        value={formData.price}
+        value={formData.price || ''}
         onChangeText={(text) => handleFieldChange('price', text)}
       />
 
@@ -108,15 +102,9 @@ export function ProductForm({
         label="Duration (seconds)"
         placeholder="Enter duration"
         keyboardType="number-pad"
-        value={
-          isEditMode
-            ? (formData.duration_seconds?.toString() || '')
-            : (formData.durationSeconds || '')
-        }
+        value={formData.duration_seconds?.toString() || ''}
         onChangeText={(text) =>
-          isEditMode
-            ? handleFieldChange('duration_seconds', text ? parseInt(text) : 0)
-            : handleFieldChange('durationSeconds', text)
+          handleFieldChange('duration_seconds', text ? parseInt(text) : 0)
         }
       />
 
@@ -124,59 +112,42 @@ export function ProductForm({
         label="Stock Quantity"
         placeholder="Enter stock amount"
         keyboardType="number-pad"
-        value={
-          isEditMode ? (formData.stock_quantity?.toString() || '') : (formData.stock || '')
-        }
+        value={formData.stock_quantity?.toString() || ''}
         onChangeText={(text) =>
-          isEditMode
-            ? handleFieldChange('stock_quantity', text ? parseInt(text) : 0)
-            : handleFieldChange('stock', text)
+          handleFieldChange('stock_quantity', text ? parseInt(text) : 0)
         }
       />
 
       <LabeledInput
         label="Description"
         placeholder="Enter product description"
-        value={formData.description}
+        value={formData.description || ''}
         onChangeText={(text) => handleFieldChange('description', text)}
         multiline
         numberOfLines={3}
       />
 
-      {isEditMode ? (
-        <LabeledInput
-          label="Effects"
-          placeholder="comma-separated effects"
-          value={formData.effects?.join(', ') || ''}
-          onChangeText={(text) =>
-            handleFieldChange('effects', text.split(',').map((t) => t.trim()))
-          }
-        />
-      ) : (
-        <LabeledInput
-          label="Tags"
-          placeholder="comma-separated tags"
-          value={formData.tags || ''}
-          onChangeText={(text) => handleFieldChange('tags', text)}
-        />
-      )}
+      <LabeledInput
+        label="Effects"
+        placeholder="comma-separated effects"
+        value={formData.effects?.join(', ') || ''}
+        onChangeText={(text) =>
+          handleFieldChange('effects', text.split(',').map((t) => t.trim()))
+        }
+      />
 
       <LabeledInput
         label="Video File Name"
         placeholder="Optional video file name"
-        value={
-          isEditMode ? (formData.video_url || '') : (formData.videoUrl || '')
-        }
-        onChangeText={(text) =>
-          isEditMode ? handleFieldChange('video_url', text) : handleFieldChange('videoUrl', text)
-        }
+        value={formData.video_url || ''}
+        onChangeText={(text) => handleFieldChange('video_url', text)}
       />
 
         <LabeledInput
           label="Image File Name"
           placeholder="Optional image file name"
-          value={formData.imageUrl || ''}
-          onChangeText={(text) => handleFieldChange('imageUrl', text)}
+          value={formData.image_url || ''}
+          onChangeText={(text) => handleFieldChange('image_url', text)}
         />
       
       <ThemedView style={styles.buttonGroup}>
