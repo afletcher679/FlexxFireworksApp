@@ -1,10 +1,33 @@
 import { Image } from 'expo-image';
-import { StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { View, StyleSheet, Modal, Pressable, Text } from 'react-native';
 
 // Map image file paths to require statements for local assets
 const imageAssets: Record<string, any> = {
   'coming_soon_flame.jpg': require('@/assets/images/fireworks/coming_soon_flame.jpg'),
-  // Add more images here as needed
+  '2_min_flashing_thunder.png': require('@/assets/images/fireworks/2_min_flashing_thunder.png'),
+  '300_max_missiles.png': require('@/assets/images/fireworks/300_max_missiles.png'),
+  '750_happy_colorful_missiles.png': require('@/assets/images/fireworks/750_happy_colorful_missiles.png'),
+  'bigfoot.png': require('@/assets/images/fireworks/bigfoot.png'),
+  'corn_flakes.png': require('@/assets/images/fireworks/corn_flakes.png'),
+  'crazy_contraband.png': require('@/assets/images/fireworks/crazy_contraband.png'),
+  'fireworks_16000.png': require('@/assets/images/fireworks/fireworks_16000.png'),
+  'game_over.png': require('@/assets/images/fireworks/game_over.png'),
+  'godzilla.png': require('@/assets/images/fireworks/godzilla.png'),
+  'godzilla_vs_kong.png': require('@/assets/images/fireworks/godzilla_vs_kong.png'),
+  'little_falutini.png': require('@/assets/images/fireworks/little_falutini.png'),
+  'merican.png': require('@/assets/images/fireworks/merican.png'),
+  'p_fkn_r.png': require('@/assets/images/fireworks/p_fkn_r.png'),
+  'printing_money.png': require('@/assets/images/fireworks/printing_money.png'),
+  'problem_child.png': require('@/assets/images/fireworks/problem_child.png'),
+  'redneck_essentials.png': require('@/assets/images/fireworks/redneck_essentials.png'),
+  'saso.png': require('@/assets/images/fireworks/saso.png'),
+  'southern_gator.png': require('@/assets/images/fireworks/southern_gator.png'),
+  'stoner.png': require('@/assets/images/fireworks/stoner.png'),
+  'supreme_warriors.png': require('@/assets/images/fireworks/supreme_warriors.png'),
+  'toy_ride.png': require('@/assets/images/fireworks/toy_ride.png'),
+  'werewolf.png': require('@/assets/images/fireworks/werewolf.png'),
+  'zombie.png': require('@/assets/images/fireworks/zombie.png'),
 };
 
 interface ProductImageProps {
@@ -13,6 +36,8 @@ interface ProductImageProps {
 
 export function ProductImage({ imageUrl }: ProductImageProps) {
   if (!imageUrl) return null;
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const getImageSource = () => {
     // Extract filename from full path (e.g., "assets/images/fireworks/coming_soon_flame.jpg" -> "coming_soon_flame.jpg")
@@ -28,14 +53,82 @@ export function ProductImage({ imageUrl }: ProductImageProps) {
     return { uri: imageUrl };
   };
 
-  return <Image source={getImageSource()} style={styles.productImage} />;
+  return (
+    <>
+      <Pressable onPress={() => setIsFullscreen(true)}>
+        <View style={styles.imageContainer}>
+          <Image source={getImageSource()} style={styles.productImage} contentFit="contain" />
+        </View>
+      </Pressable>
+
+      <Modal
+        visible={isFullscreen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setIsFullscreen(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setIsFullscreen(false)}>
+          <View style={styles.modalContent}>
+            <Image source={getImageSource()} style={styles.fullscreenImage} contentFit="contain" />
+            <Pressable style={styles.closeButton} onPress={() => setIsFullscreen(false)}>
+              <Text style={styles.closeButtonText}>✕</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Modal>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
-  productImage: {
+  imageContainer: {
     width: 100,
     height: 100,
     borderRadius: 8,
+    backgroundColor: '#ffffff',
+    padding: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
     flexShrink: 0,
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 6,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '90%',
+    height: '80%',
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullscreenImage: {
+    width: '100%',
+    height: '100%',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
