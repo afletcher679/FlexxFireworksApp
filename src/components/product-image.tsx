@@ -14,6 +14,7 @@ const imageAssets: Record<string, any> = {
   'air_jordan.png': require('@/assets/images/fireworks/air_jordan.png'),
   'amped.png': require('@/assets/images/fireworks/amped.png'),
   'bigfoot.png': require('@/assets/images/fireworks/bigfoot.png'),
+  'blue_thunder.png': require('@/assets/images/fireworks/blue_thunder.png'),
   'bring_it_home.png': require('@/assets/images/fireworks/bring_it_home.png'),
   'caution_high_voltage.png': require('@/assets/images/fireworks/caution_high_voltage.png'),
   'celebrate_america.png': require('@/assets/images/fireworks/celebrate_america.png'),
