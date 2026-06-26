@@ -1,6 +1,7 @@
 // product-video.tsx - Video player component for displaying product demo videos
 // Handles video source resolution from local assets or remote URIs
 
+import { Pressable } from 'react-native';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { StyleSheet } from 'react-native';
 
@@ -39,13 +40,23 @@ export function ProductVideo({ videoUrl }: ProductVideoProps) {
     player.loop = false;
   });
 
+  const handleVideoTap = () => {
+    if (player.playing) {
+      player.pause();
+    } else {
+      player.play();
+    }
+  };
+
   return (
-    <VideoView
-      player={player}
-      style={styles.video}
-      contentFit="contain"
-      nativeControls
-    />
+    <Pressable onPress={handleVideoTap}>
+      <VideoView
+        player={player}
+        style={styles.video}
+        contentFit="contain"
+        nativeControls
+      />
+    </Pressable>
   );
 }
 

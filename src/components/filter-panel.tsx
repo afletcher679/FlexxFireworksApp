@@ -5,22 +5,14 @@
 // 3. Price range slider to set maximum price
 // Updates parent component with filter changes in real-time
 
+import { useState, useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
 import { useTheme } from '@/hooks/use-theme';
+import { getCategories } from '@/lib/categories';
 import type { Filters, SortOptions } from '../hooks/use-product-filter';
 import type { Category } from '../types';
-
-const ALL_CATEGORIES: Category[] = [
-  'Cake',
-  'Fountain',
-  'Roman Candle',
-  'Mortar',
-  'Sparkler',
-  'Novelty',
-  'Rocket',
-];
 
 interface FilterPanelProps {
   filters: Filters;
@@ -93,6 +85,14 @@ export function FilterPanel({
   maxPriceCeiling,
 }: FilterPanelProps) {
   const theme = useTheme();
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // Fetch categories from database on component mount
+  useEffect(() => {
+    getCategories()
+      .then(setCategories)
+      .catch((error) => console.error('Failed to load categories:', error));
+  }, []);
 
   // Toggle category selection: add or remove from active categories
   const toggleCategory = (category: Category) => {
@@ -148,7 +148,7 @@ export function FilterPanel({
       <View style={styles.section}>
         <Text style={themedStyles.label}>Category</Text>
         <View style={styles.chipRow}>
-          {ALL_CATEGORIES.map((category) => {
+          {categories.map((category) => {
             const isSelected = filters.categories.has(category);
             return (
               <Pressable
