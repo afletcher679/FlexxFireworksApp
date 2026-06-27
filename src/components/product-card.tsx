@@ -12,6 +12,7 @@ import type { Firework } from '../types';
 import { useTheme } from '../hooks/use-theme';
 import { ProductVideo } from '../components/product-video';
 import { ProductImage } from '../components/product-image';
+import { formatPriceDisplay } from '../lib/format-price';
 
 interface ProductCardProps {
   product: Firework; // The firework product to display
@@ -46,7 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Product Info on the right */}
         <View style={styles.infoContainer}>
           <Text style={themedStyles.productName}>{product.name}</Text>
-          <Text style={themedStyles.productPrice}>${product.price}</Text>
+          <Text style={themedStyles.productPrice}>{formatPriceDisplay(product.price)}</Text>
 
           {/* Meta information: category and duration */}
           <View style={styles.meta}>

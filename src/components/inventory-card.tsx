@@ -8,6 +8,7 @@ import { ProductForm } from '../components/product-form';
 import { ProductImage } from '../components/product-image';
 import { Spacing } from '../constants/theme';
 import { useTheme } from '../hooks/use-theme';
+import { formatPriceDisplay } from '../lib/format-price';
 
 interface InventoryCardProps {
   product: Firework;
@@ -111,7 +112,7 @@ export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProp
               <ThemedText themeColor="textSecondary">Type: {product.type}</ThemedText>
             )}
             <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
-            <ThemedText style={styles.price}>${product.price}</ThemedText>
+            <ThemedText style={styles.price}>{formatPriceDisplay(product.price)}</ThemedText>
             <ThemedText themeColor="textSecondary">Duration (seconds): {product.duration_seconds ?? 'N/A'}</ThemedText>
             <ThemedText themeColor="textSecondary">Stock Quantity: {product.stock_quantity ?? 'N/A'}</ThemedText>
             {product.effects && product.effects.length > 0 && (
