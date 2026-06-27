@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     flexDirection: 'row',
     gap: Spacing.two,
-    marginTop: Spacing.two,
+    marginVertical: Spacing.two,
   },
   submitButton: {
     flex: 1,
