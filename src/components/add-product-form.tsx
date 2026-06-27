@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Alert } from 'react-native';
 import { ProductForm } from '../components/product-form';
-import { Toast, type ToastType } from '../components/toast';
 
 interface AddProductFormProps {
   onAddProduct: (product: {
@@ -21,9 +21,7 @@ interface AddProductFormProps {
 
 export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: AddProductFormProps) {
   const [isSaving, setIsSaving] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<ToastType>('info');
-  const [showToast, setShowToast] = useState(false);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     brand: '',
@@ -43,18 +41,14 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
 
   const handleSubmit = async () => {
     if (!formData.name || !formData.price || !formData.category) {
-      setToastMessage('Please fill in name, price, and category');
-      setToastType('error');
-      setShowToast(true);
+      Alert.alert('Missing Information', 'Please fill in name, price, and category');
       return;
     }
 
     setIsSaving(true);
     try {
       await onAddProduct(formData);
-      setToastMessage('Product added successfully!');
-      setToastType('success');
-      setShowToast(true);
+      Alert.alert('Success', 'Product added successfully!');
       setFormData({
         name: '',
         brand: '',
@@ -68,17 +62,29 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
         image_url: '',
       });
       if (onOpenChange) {
-        onOpenChange(false);
+        if (closeTimerRef.current) {
+          clearTimeout(closeTimerRef.current);
+        }
+
+        closeTimerRef.current = setTimeout(() => {
+          onOpenChange(false);
+        }, 1200);
       }
     } catch (error) {
-      setToastMessage('Failed to add product');
-      setToastType('error');
-      setShowToast(true);
+      Alert.alert('Error', 'Failed to add product');
       console.error(error);
     } finally {
       setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+      }
+    };
+  }, []);
 
   return (
       <ProductForm
@@ -88,10 +94,6 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
         isSubmitting={isSaving}
         mode="add"
         submitButtonText="Add Product"
-        toastMessage={toastMessage}
-        toastType={toastType}
-        showToast={showToast}
-        onToastDismiss={() => setShowToast(false)}
       />
   );
 }

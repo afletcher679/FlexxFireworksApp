@@ -31,10 +31,10 @@ interface ProductFormProps {
   isDeleting?: boolean;
   mode?: 'add' | 'edit';
   submitButtonText?: string;
-  toastMessage: string;
-  toastType: ToastType;
-  showToast: boolean;
-  onToastDismiss: () => void;
+  toastMessage?: string;
+  toastType?: ToastType;
+  showToast?: boolean;
+  onToastDismiss?: () => void;
 }
 
 export function ProductForm({
@@ -220,9 +220,9 @@ export function ProductForm({
         )}
       </ThemedView>
 
-      {showToast && (
+      {showToast && toastMessage && toastType && onToastDismiss ? (
         <Toast message={toastMessage} type={toastType} onDismiss={onToastDismiss} />
-      )}
+      ) : null}
     </ThemedView>
   );
 }
