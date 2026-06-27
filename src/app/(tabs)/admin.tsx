@@ -19,7 +19,7 @@ export default function AdminScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [products, setProducts] = useState<Firework[]>([]);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('flexxpyropro@gmail.com');
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
   
@@ -39,22 +39,19 @@ const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
-      if (isAuthenticated) {
-        fetchProducts();
-      }
-    }, [isAuthenticated])
-  );
+      const syncSession = async () => {
+        const { data, error } = await supabase.auth.getSession();
+        if (error || !data.session) {
+          setIsAuthenticated(false);
+          setProducts([]);
+          return;
+        }
 
-    // Reset auth state when the tab loses focus
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        setIsAuthenticated(false);
-        setEmail('');
-        setPasswordInput('');
-        setLoginError('');
-        setProducts([]);
+        setIsAuthenticated(true);
+        fetchProducts();
       };
+
+      syncSession();
     }, [])
   );
   
@@ -118,8 +115,10 @@ const handleLogin = async () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setIsAuthenticated(false);
+    setProducts([]);
   };
 
   const handleUpdateProduct = async (updatedProduct: Firework) => {
@@ -191,7 +190,7 @@ const handleLogin = async () => {
             {loginError ? (
               <ThemedText style={styles.errorText}>{loginError}</ThemedText>
             ) : null}
-
+{/* Hiding Email for now since we are using a fixed email for admin login
             <TextInput
               style={[
                 styles.passwordInput,
@@ -207,7 +206,7 @@ const handleLogin = async () => {
               keyboardType="email-address"
               value={email}
               onChangeText={(text) => { setLoginError(''); setEmail(text); }}
-            />
+            /> */}
 
             <TextInput
               style={[

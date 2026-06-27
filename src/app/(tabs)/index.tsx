@@ -42,7 +42,12 @@ export default function CatalogScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      fetchProducts();
+      const refreshCatalog = async () => {
+        await supabase.auth.signOut();
+        fetchProducts();
+      };
+
+      refreshCatalog();
     }, [fetchProducts])
   );
   const { filters, setFilters, sortKey, setSortKey, filteredProducts } =

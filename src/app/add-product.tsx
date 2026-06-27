@@ -42,7 +42,6 @@ export default function AddProductPage() {
         }]);
 
       if (error) throw error;
-      router.back();
     } catch (error) {
       console.error('Error adding product:', error);
       throw error;
