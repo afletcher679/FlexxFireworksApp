@@ -5,16 +5,13 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "@/assets/*": [
-        "./assets/*"
       ]
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "expo-env.d.ts",
+    ".expo/types/**/*.ts"
   ]
 }

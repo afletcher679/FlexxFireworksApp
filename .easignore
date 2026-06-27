@@ -1,0 +1,23 @@
+# Core excludes
+.git/
+node_modules/
+
+# Build/output/cache
+.expo/
+dist/
+web-build/
+
+# Editor/OS/local metadata
+.vscode/
+.claude/
+.DS_Store
+
+# Docs not required for cloud builds
+AGENTS.md
+CLAUDE.md
+README.md
+LICENSE
+
+# Unused/legacy icon assets
+assets/expo.icon/
+assets/images/favicon.png
