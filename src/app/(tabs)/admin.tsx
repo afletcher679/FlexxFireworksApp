@@ -37,6 +37,14 @@ const router = useRouter();
     }
   }, [isAuthenticated]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (isAuthenticated) {
+        fetchProducts();
+      }
+    }, [isAuthenticated])
+  );
+
     // Reset auth state when the tab loses focus
   useFocusEffect(
     useCallback(() => {
@@ -46,7 +54,6 @@ const router = useRouter();
         setPasswordInput('');
         setLoginError('');
         setProducts([]);
-        supabase.auth.signOut();
       };
     }, [])
   );
@@ -117,7 +124,7 @@ const handleLogin = async () => {
 
   const handleUpdateProduct = async (updatedProduct: Firework) => {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('fireworks')
         .update({
           name: updatedProduct.name,
@@ -128,11 +135,18 @@ const handleLogin = async () => {
           stock_quantity: updatedProduct.stock_quantity,
           effects: updatedProduct.effects || [],
           video_url: updatedProduct.video_url || null,
+          image_url: updatedProduct.image_url || null,
         })
-        .eq('id', updatedProduct.id);
+        .eq('id', updatedProduct.id)
+        .select('*')
+        .single();
 
       if (error) throw error;
-      fetchProducts();
+      if (!data) {
+        throw new Error('Update did not return a row. Check Supabase RLS UPDATE policy for fireworks.');
+      }
+
+      setProducts(prev => prev.map(product => (product.id === data.id ? (data as Firework) : product)));
     } catch (error) {
       console.error('Error updating product:', error);
       throw error;

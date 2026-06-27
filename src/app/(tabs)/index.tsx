@@ -22,30 +22,29 @@ export default function CatalogScreen() {
   const [products, setProducts] = useState<Firework[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch products from Supabase
-  useEffect(() => {
+  const fetchProducts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('fireworks')
+        .select('*');
 
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('fireworks')
-          .select('*');
+      if (error) throw error;
 
-        if (error) throw error;
-       // Transform and validate the data
       const typedData = (data || []) as Firework[];
-    
-        setProducts(typedData);
-      } catch (error) {
-        console.error('Error fetching fireworks:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
+      setProducts(typedData);
+    } catch (error) {
+      console.error('Error fetching fireworks:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProducts();
+    }, [fetchProducts])
+  );
   const { filters, setFilters, sortKey, setSortKey, filteredProducts } =
     useProductFilter(products);
 
