@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
-import { getCategories } from '@/lib/categories';
-import { Category } from '@/types';
+import { ThemedText } from '../components/themed-text';
+import { ThemedView } from '../components/themed-view';
+import { Spacing } from '../constants/theme';
+import { useTheme } from '../hooks/use-theme';
+import { getCategories } from '../lib/categories';
+import { Category } from '../types';
 
 interface CategoryPickerProps {
   value: string;

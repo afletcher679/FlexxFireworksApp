@@ -3,9 +3,9 @@
 // Shows an empty state message when no products match the current filters.
 
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '../hooks/use-theme';
 import { ProductCard } from './product-card';
-import type { Firework } from '@/types';
+import type { Firework } from '../types';
 
 interface ProductListProps {
   products: Firework[]; // Array of firework products to display

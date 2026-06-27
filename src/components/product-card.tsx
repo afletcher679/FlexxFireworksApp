@@ -7,12 +7,11 @@
 
 import { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Collapsible } from '@/components/ui/collapsible';
-import type { Firework } from '@/types';
-import { useTheme } from '@/hooks/use-theme';
-import { ProductVideo } from '@/components/product-video';
-import { ProductImage } from '@/components/product-image';
-import { ThemedView } from './themed-view';
+import { Collapsible } from '../components/ui/collapsible';
+import type { Firework } from '../types';
+import { useTheme } from '../hooks/use-theme';
+import { ProductVideo } from '../components/product-video';
+import { ProductImage } from '../components/product-image';
 
 interface ProductCardProps {
   product: Firework; // The firework product to display

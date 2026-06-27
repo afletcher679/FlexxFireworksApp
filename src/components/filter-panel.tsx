@@ -9,8 +9,8 @@ import { useState, useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Slider from '@react-native-community/slider';
-import { useTheme } from '@/hooks/use-theme';
-import { getCategories } from '@/lib/categories';
+import { useTheme } from '../hooks/use-theme';
+import { getCategories } from '../lib/categories';
 import type { Filters, SortOptions } from '../hooks/use-product-filter';
 import type { Category } from '../types';
 

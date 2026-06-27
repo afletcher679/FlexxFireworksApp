@@ -3,7 +3,7 @@
 // Displays a clear button when there's active search text.
 
 import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
-import { useTheme } from '@/hooks/use-theme';
+import { useTheme } from '../hooks/use-theme';
 
 interface SearchBarProps {
   query: string; // Current search query string

@@ -1,5 +1,5 @@
-import { supabase } from '@/lib/supabase';
-import { Category } from '@/types';
+import { supabase } from '../lib/supabase';
+import { Category } from '../types';
 
 let cachedCategories: Category[] | null = null;
 

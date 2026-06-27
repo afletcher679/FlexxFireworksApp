@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Collapsible } from '@/components/ui/collapsible';
-import { ProductForm } from '@/components/product-form';
-import { Toast, type ToastType } from '@/components/toast';
+import { ProductForm } from '../components/product-form';
+import { Toast, type ToastType } from '../components/toast';
 
 interface AddProductFormProps {
   onAddProduct: (product: {

@@ -3,20 +3,20 @@ import { ScrollView, StyleSheet, TextInput, Pressable, Alert } from 'react-nativ
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { supabase } from '@/lib/supabase';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { ProductUpdateCard } from '@/components/inventory-card';
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
-import { Firework } from '@/types';
-import { Collapsible } from '@/components/ui/collapsible';
-import { useProductFilter } from '@/hooks/use-product-filter';
-import { FilterPanel } from '@/components/filter-panel';
-import SearchBar from '@/components/search-bar';
+import { supabase } from '../../lib/supabase';
+import { ThemedText } from '../../components/themed-text';
+import { ThemedView } from '../../components/themed-view';
+import { InventoryCard } from '../../components/inventory-card';
+import { Spacing } from '../../constants/theme';
+import { useTheme } from '../../hooks/use-theme';
+import { Firework } from '../../types';
+import { Collapsible } from '../../components/ui/collapsible';
+import { useProductFilter } from '../../hooks/use-product-filter';
+import { FilterPanel } from '../../components/filter-panel';
+import SearchBar from '../../components/search-bar';
 
 export default function AdminScreen() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [products, setProducts] = useState<Firework[]>([]);
   const [email, setEmail] = useState('');
@@ -260,8 +260,6 @@ const handleLogin = async () => {
 </ThemedView>
 
         </ThemedView>
-
-        {/* Products List */}
                 <Collapsible title="Search, Filter, and Sort">
                   <SearchBar
                     query={filters.query}
@@ -274,13 +272,14 @@ const handleLogin = async () => {
                     setSortOption={setSortKey}
                   />
                 </Collapsible>
+                {/* Products List */}
         <ThemedView style={styles.contentArea}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             Current Fireworks ({products.length})
           </ThemedText>
 
           {filteredProducts.map((product) => (
-            <ProductUpdateCard
+            <InventoryCard
               key={product.id}
               product={product}
               onUpdate={handleUpdateProduct}

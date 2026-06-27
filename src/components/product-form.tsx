@@ -1,12 +1,12 @@
 import { StyleSheet, Pressable } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { LabeledInput } from '@/components/labeled-input';
-import { CategoryPicker } from '@/components/category-picker';
-import { Toast, type ToastType } from '@/components/toast';
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { ThemedText } from '../components/themed-text';
+import { ThemedView } from '../components/themed-view';
+import { LabeledInput } from '../components/labeled-input';
+import { CategoryPicker } from '../components/category-picker';
+import { Toast, type ToastType } from '../components/toast';
+import { Spacing } from '../constants/theme';
+import { useTheme } from '../hooks/use-theme';
 
 interface ProductFormData {
   name: string;

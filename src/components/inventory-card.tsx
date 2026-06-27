@@ -1,22 +1,22 @@
 import { useState } from 'react';
 import { StyleSheet, Pressable, Alert, View } from 'react-native';
 
-import { Firework } from '@/types';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { ProductForm } from '@/components/product-form';
-import { ProductImage } from '@/components/product-image';
-import { Toast, type ToastType } from '@/components/toast';
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { Firework } from '../types';
+import { ThemedText } from '../components/themed-text';
+import { ThemedView } from '../components/themed-view';
+import { ProductForm } from '../components/product-form';
+import { ProductImage } from '../components/product-image';
+import { Toast, type ToastType } from '../components/toast';
+import { Spacing } from '../constants/theme';
+import { useTheme } from '../hooks/use-theme';
 
-interface ProductUpdateCardProps {
+interface InventoryCardProps {
   product: Firework;
   onUpdate: (updatedProduct: Firework) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
 }
 
-export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdateCardProps) {
+export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProps) {
   const theme = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [editedProduct, setEditedProduct] = useState<Firework>(product);

@@ -1,19 +1,19 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { ScrollView, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from 'expo-router';
 
-import { supabase, testConnection } from '@/lib/supabase';
-import type { Firework, Category } from '@/types';
-import { useProductFilter } from '@/hooks/use-product-filter';
-import { SearchBar } from '@/components/search-bar';
-import { FilterPanel } from '@/components/filter-panel';
-import { ProductList } from '@/components/product-list';
-import { ThemedView } from '@/components/themed-view';
-import { Collapsible } from '@/components/ui/collapsible';
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
-import { Link } from 'expo-router';
-import { ThemedText } from '@/components/themed-text';
+import { supabase } from '../../lib/supabase';
+import type { Firework } from '../../types';
+import { useProductFilter } from '../../hooks/use-product-filter';
+import { SearchBar } from '../../components/search-bar';
+import { FilterPanel } from '../../components/filter-panel';
+import { ProductList } from '../../components/product-list';
+import { ThemedView } from '../../components/themed-view';
+import { Collapsible } from '../../components/ui/collapsible';
+import { Spacing } from '../../constants/theme';
+import { useTheme } from '../../hooks/use-theme';
+import { ThemedText } from '../../components/themed-text';
 
 
 export default function CatalogScreen() {

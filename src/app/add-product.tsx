@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { supabase } from '@/lib/supabase';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { AddProductForm } from '@/components/add-product-form';
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { supabase } from '../lib/supabase';
+import { ThemedText } from '../components/themed-text';
+import { ThemedView } from '../components/themed-view';
+import { AddProductForm } from '../components/add-product-form';
+import { Spacing } from '../constants/theme';
+import { useTheme } from '../hooks/use-theme';
 
 export default function AddProductPage() {
   const router = useRouter();
