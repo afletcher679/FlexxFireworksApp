@@ -17,13 +17,14 @@ export function Toast({ message, type = 'info', duration = 3000, onDismiss }: To
   const theme = useTheme();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [isVisible, setIsVisible] = useState(true);
+  const useNativeDriver = Platform.OS !== 'web';
 
   useEffect(() => {
     // Fade in
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver,
     }).start();
 
     // Auto dismiss
@@ -31,7 +32,7 @@ export function Toast({ message, type = 'info', duration = 3000, onDismiss }: To
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 300,
-        useNativeDriver: true,
+        useNativeDriver,
       }).start(() => {
         setIsVisible(false);
         onDismiss?.();
@@ -39,7 +40,7 @@ export function Toast({ message, type = 'info', duration = 3000, onDismiss }: To
     }, duration);
 
     return () => clearTimeout(timer);
-  }, [fadeAnim, duration, onDismiss]);
+  }, [fadeAnim, duration, onDismiss, useNativeDriver]);
 
   if (!isVisible) return null;
 
