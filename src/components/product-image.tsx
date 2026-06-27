@@ -104,7 +104,6 @@ export function ProductImage({ imageUrl }: ProductImageProps) {
     }
 
     // Fallback to URI
-    console.log('Using URI fallback for image:', imageUrl);
     return { uri: imageUrl };
   };
 

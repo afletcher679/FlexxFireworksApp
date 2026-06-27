@@ -76,25 +76,19 @@ const handleLogin = async () => {
     }
     setIsLoading(true);
     try {
-      console.log('Attempting sign in with:', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password: passwordInput,
       });
 
-      console.log('Auth response - data:', JSON.stringify(data), 'error:', JSON.stringify(error));
-
       if (error) throw error;
 
       // Check if the signed-in user has the admin role
-      console.log('Checking profile for user id:', data.user.id);
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', data.user.id)
         .single();
-
-      console.log('Profile response - data:', JSON.stringify(profile), 'error:', JSON.stringify(profileError));
 
       if (profileError) throw profileError;
 
@@ -108,7 +102,6 @@ const handleLogin = async () => {
       setPasswordInput('');
       setEmail('');
     } catch (error: any) {
-      console.log('Login error caught:', JSON.stringify(error));
       setLoginError(error.message || 'Invalid email or password');
     } finally {
       setIsLoading(false);

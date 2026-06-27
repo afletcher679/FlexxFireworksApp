@@ -90,7 +90,6 @@ export function ProductVideo({ videoUrl }: ProductVideoProps) {
     }
 
     // Fallback to URI
-    console.log('Using URI fallback for video:', videoUrl);
     return { uri: videoUrl };
   };
 
