@@ -4,7 +4,6 @@ import { ThemedText } from '../components/themed-text';
 import { ThemedView } from '../components/themed-view';
 import { LabeledInput } from '../components/labeled-input';
 import { CategoryPicker } from '../components/category-picker';
-import { Toast, type ToastType } from '../components/toast';
 import { Spacing } from '../constants/theme';
 import { useTheme } from '../hooks/use-theme';
 
@@ -31,10 +30,6 @@ interface ProductFormProps {
   isDeleting?: boolean;
   mode?: 'add' | 'edit';
   submitButtonText?: string;
-  toastMessage?: string;
-  toastType?: ToastType;
-  showToast?: boolean;
-  onToastDismiss?: () => void;
 }
 
 export function ProductForm({
@@ -47,10 +42,6 @@ export function ProductForm({
   isDeleting = false,
   mode = 'add',
   submitButtonText = 'Add Product',
-  toastMessage,
-  toastType,
-  showToast,
-  onToastDismiss,
 }: ProductFormProps) {
   const theme = useTheme();
   const isEditMode = mode === 'edit';
@@ -220,9 +211,6 @@ export function ProductForm({
         )}
       </ThemedView>
 
-      {showToast && toastMessage && toastType && onToastDismiss ? (
-        <Toast message={toastMessage} type={toastType} onDismiss={onToastDismiss} />
-      ) : null}
     </ThemedView>
   );
 }

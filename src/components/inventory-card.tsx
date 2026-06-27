@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, Pressable, Alert, View } from 'react-native';
+import { StyleSheet, Pressable, Alert, Platform, View } from 'react-native';
 
 import { Firework } from '../types';
 import { ThemedText } from '../components/themed-text';
 import { ThemedView } from '../components/themed-view';
 import { ProductForm } from '../components/product-form';
 import { ProductImage } from '../components/product-image';
-import { Toast, type ToastType } from '../components/toast';
 import { Spacing } from '../constants/theme';
 import { useTheme } from '../hooks/use-theme';
 
@@ -22,9 +21,6 @@ export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProp
   const [editedProduct, setEditedProduct] = useState<Firework>(product);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState<ToastType>('info');
-  const [showToast, setShowToast] = useState(false);
 
   const handleFormChange = (field: string, value: any) => {
     setEditedProduct((prev) => ({ ...prev, [field]: value }));
@@ -32,9 +28,7 @@ export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProp
 
   const handleSave = async () => {
     if (!editedProduct.name || !editedProduct.price || !editedProduct.category) {
-      setToastMessage('Please fill in name, price, and category');
-      setToastType('error');
-      setShowToast(true);
+      Alert.alert('Missing Information', 'Please fill in name, price, and category');
       return;
     }
 
@@ -42,20 +36,38 @@ export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProp
     try {
       await onUpdate(editedProduct);
       setIsEditing(false);
-      setToastMessage('Product updated successfully!');
-      setToastType('success');
-      setShowToast(true);
+      Alert.alert('Success', 'Product updated successfully!');
     } catch (error) {
-      setToastMessage('Failed to update product');
-      setToastType('error');
-      setShowToast(true);
+      Alert.alert('Error', 'Failed to update product');
       console.error(error);
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleDelete = () => {
+  const executeDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onDelete(product.id);
+      Alert.alert('Success', 'Product deleted successfully!');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete product');
+      console.error(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (Platform.OS === 'web') {
+      const confirmed = globalThis.confirm(
+        `Are you sure you want to delete "${product.name}"?`
+      );
+      if (!confirmed) return;
+      await executeDelete();
+      return;
+    }
+
     return new Promise<void>((resolve) => {
       Alert.alert(
         'Delete Product',
@@ -66,20 +78,7 @@ export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProp
             text: 'Delete',
             style: 'destructive',
             onPress: async () => {
-              setIsDeleting(true);
-              try {
-                await onDelete(product.id);
-                setToastMessage('Product deleted successfully!');
-                setToastType('success');
-                setShowToast(true);
-              } catch (error) {
-                setToastMessage('Failed to delete product');
-                setToastType('error');
-                setShowToast(true);
-                console.error(error);
-              } finally {
-                setIsDeleting(false);
-              }
+              await executeDelete();
               resolve();
             },
           },
@@ -166,10 +165,6 @@ export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProp
       isDeleting={isDeleting}
       mode="edit"
       submitButtonText="Save"
-      toastMessage={toastMessage}
-      toastType={toastType}
-      showToast={showToast}
-      onToastDismiss={() => setShowToast(false)}
     />
     </ThemedView>
   );
