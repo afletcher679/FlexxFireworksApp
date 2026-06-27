@@ -75,7 +75,7 @@ export function ProductForm({
         onChangeText={(text) => handleFieldChange('name', text)}
       />
 
-      {formData.type && (
+      {!!formData.type && (
         <LabeledInput
           label="Type"
           placeholder="Enter product type"

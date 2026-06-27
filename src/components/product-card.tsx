@@ -56,10 +56,10 @@ export function ProductCard({ product }: ProductCardProps) {
                 {product.category.replace('-', ' ')}
               </Text>
             </View>
-            {product.type && (
+            {!!product.type && (
               <Text style={[themedStyles.productBrand, styles.typeText]}>{product.type}</Text>
             )}
-            {product.duration_seconds && (
+            {!!product.duration_seconds && (
               <View style={themedStyles.metaBadge}>
                 <Text style={themedStyles.metaBadgeText}>
                   {product.duration_seconds} seconds
@@ -69,13 +69,13 @@ export function ProductCard({ product }: ProductCardProps) {
           </View>
 
           {/* Optional description field */}
-          {product.description && (
+          {!!product.description && (
             <Text style={[themedStyles.description, styles.descriptionText]}>{product.description}</Text>
           )}
         </View>
       </View>
       
-      {product.video_url && (
+            {!!product.video_url && (
         <Collapsible title={isVideoShown ? 'Hide Demo' : 'Show Demo'} >
           <View style={[styles.videoContainer, {borderColor: theme.accent}]}>
             <ProductVideo videoUrl={product.video_url} />

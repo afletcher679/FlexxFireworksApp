@@ -105,10 +105,10 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
         
         {/* Content Row: Image on left, Data on right */}
         <ThemedView style={styles.contentRow}>
-          {product.image_url && <ProductImage imageUrl={product.image_url} />}
+          {!!product.image_url && <ProductImage imageUrl={product.image_url} />}
           
           <ThemedView style={styles.displayMode}>
-            {product.type && (
+            {!!product.type && (
               <ThemedText themeColor="textSecondary">Type: {product.type}</ThemedText>
             )}
             <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>

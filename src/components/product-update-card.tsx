@@ -96,7 +96,7 @@ export function ProductUpdateCard({ product, onUpdate, onDelete }: ProductUpdate
         ]}>
         <ThemedView style={styles.displayMode}>
           <ThemedText type="subtitle">{product.name}</ThemedText>
-          {product.type && (
+          {!!product.type && (
             <ThemedText themeColor="textSecondary">Type: {product.type}</ThemedText>
           )}
           <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
