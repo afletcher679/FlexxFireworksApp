@@ -9,10 +9,11 @@ interface AddProductFormProps {
     category: string;
     price: string;
     description: string;
-    durationSeconds: string;
-    stock: string;
-    tags: string;
-    videoUrl: string;
+    duration_seconds: number;
+    stock_quantity: number;
+    effects: string[];
+    video_url: string;
+    image_url: string;
   }) => Promise<void>;
   isOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
@@ -29,11 +30,11 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
     category: '',
     price: '',
     description: '',
-    durationSeconds: '',
-    stock: '',
-    tags: '',
-    videoUrl: '',
-    imageUrl: '',
+    duration_seconds: 0,
+    stock_quantity: 0,
+    effects: [] as string[],
+    video_url: '',
+    image_url: '',
   });
 
   const handleFormChange = (field: string, value: any) => {
@@ -60,11 +61,11 @@ export function AddProductForm({ onAddProduct, isOpen = true, onOpenChange }: Ad
         category: '',
         price: '',
         description: '',
-        durationSeconds: '',
-        stock: '',
-        tags: '',
-        videoUrl: '',
-        imageUrl: '',
+        duration_seconds: 0,
+        stock_quantity: 0,
+        effects: [],
+        video_url: '',
+        image_url: '',
       });
       if (onOpenChange) {
         onOpenChange(false);

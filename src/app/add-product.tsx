@@ -20,24 +20,25 @@ export default function AddProductPage() {
     category: string;
     price: string;
     description: string;
-    durationSeconds: string;
-    stock: string;
-    tags: string;
-    videoUrl: string;
+    duration_seconds: number;
+    stock_quantity: number;
+    effects: string[];
+    video_url: string;
+    image_url: string;
   }) => {
     try {
       const { error } = await supabase
-        .from('products')
+        .from('fireworks')
         .insert([{
           name: newProduct.name,
-          brand: newProduct.brand || null,
           category: newProduct.category,
-          price: parseFloat(newProduct.price),
+          price: newProduct.price,
           description: newProduct.description,
-          durationSeconds: parseInt(newProduct.durationSeconds) || 0,
-          stock: parseInt(newProduct.stock) || 0,
-          tags: newProduct.tags ? newProduct.tags.split(',').map(t => t.trim()) : [],
-          videoUrl: newProduct.videoUrl || null,
+          duration_seconds: newProduct.duration_seconds || 0,
+          stock_quantity: newProduct.stock_quantity || 0,
+          effects: newProduct.effects || [],
+          video_url: newProduct.video_url || null,
+          image_url: newProduct.image_url || null,
         }]);
 
       if (error) throw error;

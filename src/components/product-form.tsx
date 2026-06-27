@@ -89,6 +89,12 @@ export function ProductForm({
         onValueChange={(text) => handleFieldChange('category', text)}
         required
       />
+      <LabeledInput
+        label="Type"
+        placeholder="Enter product type"
+        value={formData.type || ''}
+        onChangeText={(text) => handleFieldChange('type', text)}
+      />
 
       <LabeledInput
         label="Price"
@@ -188,11 +194,11 @@ export function ProductForm({
                 handleFieldChange('category', '');
                 handleFieldChange('price', '');
                 handleFieldChange('description', '');
-                handleFieldChange('durationSeconds', '');
-                handleFieldChange('stock', '');
-                handleFieldChange('tags', '');
-                handleFieldChange('videoUrl', '');
-                handleFieldChange('imageUrl', '');
+                handleFieldChange('duration_seconds', 0);
+                handleFieldChange('stock_quantity', 0);
+                handleFieldChange('effects', []);
+                handleFieldChange('video_url', '');
+                handleFieldChange('image_url', '');
               }}>
               <ThemedText style={styles.resetButtonText}>Reset</ThemedText>
             </Pressable>
