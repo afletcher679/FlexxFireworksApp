@@ -38,6 +38,7 @@ const videoAssets: Record<string, any> = {
   'hall_of_fame.mp4': require('../../assets/videos/hall_of_fame.mp4'),
   'heavy_ordnance.mp4': require('../../assets/videos/heavy_ordnance.mp4'),
   'home_run.mp4': require('../../assets/videos/home_run.mp4'),
+  'hulk_smash.mp4': require('../../assets/videos/hulk_smash.mp4'),
   'king_cracker.mp4': require('../../assets/videos/king_cracker.mp4'),
   'lit_dynamite.mp4': require('../../assets/videos/lit_dynamite.mp4'),
   'Kush_66_shot.mp4': require('../../assets/videos/Kush_66_shot.mp4'),

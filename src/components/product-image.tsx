@@ -46,6 +46,7 @@ const imageAssets: Record<string, any> = {
   'happy_boom_meal.jpg': require('../../assets/images/fireworks/happy_boom_meal.jpg'),
   'heavy_ordnance.jpg': require('../../assets/images/fireworks/heavy_ordnance.jpg'),
   'home_run.jpg': require('../../assets/images/fireworks/home_run.jpg'),
+  'hulk_smash.jpg': require('../../assets/images/fireworks/hulk_smash.jpg'),
   'king_cracker.jpg': require('../../assets/images/fireworks/king_cracker.jpg'),
   'kush.jpg': require('../../assets/images/fireworks/kush.jpg'),
   'liberation_day.jpg': require('../../assets/images/fireworks/liberation_day.jpg'),
