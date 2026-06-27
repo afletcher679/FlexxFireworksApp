@@ -49,21 +49,36 @@ export function ProductCard({ product }: ProductCardProps) {
           <Text style={themedStyles.productName}>{product.name}</Text>
           <Text style={themedStyles.productPrice}>{formatPriceDisplay(product.price)}</Text>
 
-          {/* Meta information: category and duration */}
-          <View style={styles.meta}>
-            <View style={themedStyles.metaBadge}>
-              <Text style={themedStyles.metaBadgeText}>
-                {product.category.replace('-', ' ')}
-              </Text>
-            </View>
-            {!!product.type && (
-              <Text style={[themedStyles.productBrand, styles.typeText]}>{product.type}</Text>
-            )}
-            {!!product.duration_seconds && (
+          {/* Meta information: category, type, and effects */}
+          <View style={styles.metaSection}>
+            <View style={styles.metaRow}>
               <View style={themedStyles.metaBadge}>
                 <Text style={themedStyles.metaBadgeText}>
-                  {product.duration_seconds} seconds
+                  {product.category.replace('-', ' ')}
                 </Text>
+              </View>
+              {!!product.type && (
+                <Text style={[themedStyles.productBrand, styles.typeText]}>{product.type}</Text>
+              )}
+            </View>
+
+            {product.effects && product.effects.length > 0 && (
+              <View style={styles.tagsContainer}>
+                {product.effects.map((effect: string) => (
+                  <View key={effect} style={themedStyles.tag}>
+                    <Text style={themedStyles.tagText}>{effect}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {!!product.duration_seconds && (
+              <View style={styles.durationRow}>
+                <View style={themedStyles.metaBadge}>
+                  <Text style={themedStyles.metaBadgeText}>
+                    {product.duration_seconds} seconds
+                  </Text>
+                </View>
               </View>
             )}
           </View>
@@ -81,17 +96,6 @@ export function ProductCard({ product }: ProductCardProps) {
             <ProductVideo videoUrl={product.video_url} />
           </View>
         </Collapsible>
-      )}
-
-      {/* Product effects/labels rendered as individual badges */}
-      {product.effects && product.effects.length > 0 && (
-        <View style={styles.tagsContainer}>
-          {product.effects.map((effect: string) => (
-            <View key={effect} style={themedStyles.tag}>
-              <Text style={themedStyles.tagText}>{effect}</Text>
-            </View>
-          ))}
-        </View>
       )}
 
     </View>
@@ -136,12 +140,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 8,
   },
-  // Meta information container (category and duration)
-  meta: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
+  // Meta section container
+  metaSection: {
     marginBottom: 8,
+  },
+  // Meta information first row (category and type)
+  metaRow: {
+    flexDirection: 'row',
+    gap: 6,
+    alignItems: 'center',
   },
   // Category badge styling
   metaBadge: {
@@ -155,6 +162,7 @@ const styles = StyleSheet.create({
   // Type text styling (displayed inline with meta, no badge)
   typeText: {
     marginBottom: 0,
+    alignSelf: 'center',
   },
   // Description text
   description: {
@@ -170,7 +178,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
-    marginBottom: 12,
+    marginTop: 8,
+  },
+  // Duration row below effects
+  durationRow: {
+    marginTop: 8,
   },
   // Individual tag styling
   tag: {

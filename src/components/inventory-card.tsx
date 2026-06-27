@@ -108,10 +108,10 @@ export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProp
           {!!product.image_url && <ProductImage imageUrl={product.image_url} />}
           
           <ThemedView style={styles.displayMode}>
-            {!!product.type && (
+            <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
+           {!!product.type && (
               <ThemedText themeColor="textSecondary">Type: {product.type}</ThemedText>
             )}
-            <ThemedText themeColor="textSecondary">Category: {product.category}</ThemedText>
             <ThemedText style={styles.price}>{formatPriceDisplay(product.price)}</ThemedText>
             <ThemedText themeColor="textSecondary">Duration (seconds): {product.duration_seconds ?? 'N/A'}</ThemedText>
             <ThemedText themeColor="textSecondary">Stock Quantity: {product.stock_quantity ?? 'N/A'}</ThemedText>
