@@ -9,12 +9,9 @@ web-build/
 
 # Editor/OS/local metadata
 .vscode/
-.claude/
 .DS_Store
 
 # Docs not required for cloud builds
-AGENTS.md
-CLAUDE.md
 README.md
 LICENSE
 
