@@ -174,15 +174,15 @@ export function InventoryCard({ product, onUpdate, onDelete }: InventoryCardProp
 const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 8,
-    marginBottom: Spacing.two,
     padding: Spacing.two,
     flexDirection: 'column',
-    gap: Spacing.two,
   },
   contentRow: {
     flexDirection: 'row',
-    gap: Spacing.two,
+    gap: Spacing.three,
     alignItems: 'center',
+    paddingLeft: Spacing.two,
+    paddingTop: Spacing.two,
   },
   displayMode: {
     flex: 1,
@@ -197,7 +197,8 @@ const styles = StyleSheet.create({
   },
   buttonGroup: {
     flexDirection: 'row',
-    gap: Spacing.two,
+    gap: Spacing.three,
+    padding: Spacing.two,
   },
   editButton: {
     flex: 1,
@@ -228,5 +229,6 @@ const styles = StyleSheet.create({
   fireworkName: {
     fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: Spacing.one,
   },
 });
