@@ -29,6 +29,8 @@ yarn-error.*
 # macOS
 .DS_Store
 *.pem
+# ...but DO track the public Let's Encrypt root cert bundled for old Android devices
+!android-assets/isrg_root_x1.pem
 
 # local env files
 .env*.local
