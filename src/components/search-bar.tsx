@@ -2,8 +2,8 @@
 // Allows users to search for fireworks by name, description, or tags.
 // Displays a clear button when there's active search text.
 
-import { View, TextInput, Pressable, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../hooks/use-theme';
+import { View, TextInput, Pressable, Text, StyleSheet } from "react-native";
+import { useTheme } from "../hooks/use-theme";
 
 interface SearchBarProps {
   query: string; // Current search query string
@@ -13,8 +13,8 @@ interface SearchBarProps {
 const styles = StyleSheet.create({
   // Main search bar container
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 10,
     paddingRight: 8,
     marginBottom: 12,
@@ -29,12 +29,12 @@ const styles = StyleSheet.create({
   // Clear button styling
   clearButton: {
     padding: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   clearButtonText: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
@@ -42,7 +42,10 @@ export function SearchBar({ query, onQueryChange }: SearchBarProps) {
   const theme = useTheme();
 
   const themedStyles = {
-    container: [styles.container, { backgroundColor: theme.inputBackground, borderColor: theme.border }],
+    container: [
+      styles.container,
+      { backgroundColor: theme.inputBackground, borderColor: theme.border },
+    ],
     input: [styles.input, { color: theme.text }],
     clearButtonText: [styles.clearButtonText, { color: theme.text }],
   };
@@ -62,7 +65,7 @@ export function SearchBar({ query, onQueryChange }: SearchBarProps) {
       {query ? (
         <Pressable
           style={styles.clearButton}
-          onPress={() => onQueryChange('')}
+          onPress={() => onQueryChange("")}
           hitSlop={8}
         >
           <Text style={themedStyles.clearButtonText}>×</Text>

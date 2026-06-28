@@ -1,20 +1,24 @@
-import { useMemo, useState, useCallback } from 'react';
-import { ScrollView, StyleSheet, ActivityIndicator, Pressable } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from 'expo-router';
+import { useMemo, useState, useCallback } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  Pressable,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useFocusEffect } from "expo-router";
 
-import { supabase } from '../../lib/supabase';
-import type { Firework } from '../../types';
-import { useProductFilter } from '../../hooks/use-product-filter';
-import { SearchBar } from '../../components/search-bar';
-import { FilterPanel } from '../../components/filter-panel';
-import { ProductList } from '../../components/product-list';
-import { ThemedView } from '../../components/themed-view';
-import { Collapsible } from '../../components/ui/collapsible';
-import { Spacing } from '../../constants/theme';
-import { useTheme } from '../../hooks/use-theme';
-import { ThemedText } from '../../components/themed-text';
-
+import { supabase } from "../../lib/supabase";
+import type { Firework } from "../../types";
+import { useProductFilter } from "../../hooks/use-product-filter";
+import { SearchBar } from "../../components/search-bar";
+import { FilterPanel } from "../../components/filter-panel";
+import { ProductList } from "../../components/product-list";
+import { ThemedView } from "../../components/themed-view";
+import { Collapsible } from "../../components/ui/collapsible";
+import { Spacing } from "../../constants/theme";
+import { useTheme } from "../../hooks/use-theme";
+import { ThemedText } from "../../components/themed-text";
 
 export default function CatalogScreen() {
   const insets = useSafeAreaInsets();
@@ -25,16 +29,14 @@ export default function CatalogScreen() {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('fireworks')
-        .select('*');
+      const { data, error } = await supabase.from("fireworks").select("*");
 
       if (error) throw error;
 
       const typedData = (data || []) as Firework[];
       setProducts(typedData);
     } catch (error) {
-      console.error('Error fetching fireworks:', error);
+      console.error("Error fetching fireworks:", error);
     } finally {
       setLoading(false);
     }
@@ -48,34 +50,53 @@ export default function CatalogScreen() {
       };
 
       refreshCatalog();
-    }, [fetchProducts])
+    }, [fetchProducts]),
   );
   const { filters, setFilters, sortKey, setSortKey, filteredProducts } =
     useProductFilter(products);
 
-const maxPriceCeiling = useMemo(() => {
-  if (products.length === 0) return 100;
-  return Math.ceil(Math.max(...products.map(p => parseFloat(p.price as unknown as string))));
-}, [products]);
+  const maxPriceCeiling = useMemo(() => {
+    if (products.length === 0) return 100;
+    return Math.ceil(
+      Math.max(
+        ...products.map((p) => parseFloat(p.price as unknown as string)),
+      ),
+    );
+  }, [products]);
 
-
-if (loading) {
+  if (loading) {
     return (
-      <ThemedView style={[styles.container, { backgroundColor: theme.background }, { paddingTop: insets.top + Spacing.six }, { justifyContent: 'center', alignItems: 'center' }]}>
+      <ThemedView
+        style={[
+          styles.container,
+          { backgroundColor: theme.background },
+          { paddingTop: insets.top + Spacing.six },
+          { justifyContent: "center", alignItems: "center" },
+        ]}
+      >
         <ActivityIndicator size="large" color={theme.tint} />
       </ThemedView>
     );
   }
   return (
-    <ThemedView style={[styles.container, { backgroundColor: theme.background }, { paddingTop: insets.top + Spacing.six }]}>
-      <ThemedText style={{ color: theme.textMuted, textAlign: 'center' }}>{products.length} fireworks</ThemedText>
+    <ThemedView
+      style={[
+        styles.container,
+        { backgroundColor: theme.background },
+        { paddingTop: insets.top + Spacing.six },
+      ]}
+    >
+      <ThemedText style={{ color: theme.textMuted, textAlign: "center" }}>
+        {products.length} fireworks
+      </ThemedText>
       {/* Sticky controls section - OUTSIDE ScrollView */}
-      <ThemedView style={[styles.stickyControls, { borderBottomColor: theme.border }]}>
-
+      <ThemedView
+        style={[styles.stickyControls, { borderBottomColor: theme.border }]}
+      >
         <Collapsible title="Search, Filter, and Sort">
           <SearchBar
             query={filters.query}
-            onQueryChange={query => setFilters({ ...filters, query })}
+            onQueryChange={(query) => setFilters({ ...filters, query })}
           />
           <FilterPanel
             filters={filters}
@@ -110,7 +131,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.four,
     paddingBottom: Spacing.two,
-    alignItems: 'center',
+    alignItems: "center",
     gap: Spacing.one,
   },
   stickyControls: {

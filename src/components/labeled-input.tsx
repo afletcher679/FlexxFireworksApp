@@ -1,8 +1,8 @@
-import { TextInput, TextInputProps, StyleSheet } from 'react-native';
-import { ThemedText } from '../components/themed-text';
-import { ThemedView } from '../components/themed-view';
-import { Spacing } from '../constants/theme';
-import { useTheme } from '../hooks/use-theme';
+import { TextInput, TextInputProps, StyleSheet } from "react-native";
+import { ThemedText } from "../components/themed-text";
+import { ThemedView } from "../components/themed-view";
+import { Spacing } from "../constants/theme";
+import { useTheme } from "../hooks/use-theme";
 
 interface LabeledInputProps extends TextInputProps {
   label: string;
@@ -21,7 +21,11 @@ export function LabeledInput({ label, required, ...props }: LabeledInputProps) {
       <TextInput
         style={[
           styles.input,
-          { backgroundColor: theme.background, color: theme.text, borderColor: theme.border },
+          {
+            backgroundColor: theme.background,
+            color: theme.text,
+            borderColor: theme.border,
+          },
         ]}
         placeholderTextColor={theme.textMuted}
         {...props}
@@ -36,10 +40,10 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   required: {
-    color: 'red',
+    color: "red",
   },
   input: {
     borderWidth: 1,

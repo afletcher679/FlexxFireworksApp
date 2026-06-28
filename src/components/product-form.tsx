@@ -1,11 +1,11 @@
-import { StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable } from "react-native";
 
-import { ThemedText } from '../components/themed-text';
-import { ThemedView } from '../components/themed-view';
-import { LabeledInput } from '../components/labeled-input';
-import { CategoryPicker } from '../components/category-picker';
-import { Spacing } from '../constants/theme';
-import { useTheme } from '../hooks/use-theme';
+import { ThemedText } from "../components/themed-text";
+import { ThemedView } from "../components/themed-view";
+import { LabeledInput } from "../components/labeled-input";
+import { CategoryPicker } from "../components/category-picker";
+import { Spacing } from "../constants/theme";
+import { useTheme } from "../hooks/use-theme";
 
 interface ProductFormData {
   name: string;
@@ -28,7 +28,7 @@ interface ProductFormProps {
   onDelete?: () => Promise<void>;
   isSubmitting?: boolean;
   isDeleting?: boolean;
-  mode?: 'add' | 'edit';
+  mode?: "add" | "edit";
   submitButtonText?: string;
 }
 
@@ -40,11 +40,11 @@ export function ProductForm({
   onDelete,
   isSubmitting = false,
   isDeleting = false,
-  mode = 'add',
-  submitButtonText = 'Add Product',
+  mode = "add",
+  submitButtonText = "Add Product",
 }: ProductFormProps) {
   const theme = useTheme();
-  const isEditMode = mode === 'edit';
+  const isEditMode = mode === "edit";
 
   const handleFieldChange = (field: string, value: any) => {
     onFormChange(field, value);
@@ -54,7 +54,7 @@ export function ProductForm({
     <ThemedView style={[styles.formContainer]}>
       {isEditMode && (
         <ThemedText type="subtitle" style={styles.title}>
-          Edit {formData.name || 'Product'}
+          Edit {formData.name || "Product"}
         </ThemedText>
       )}
 
@@ -62,46 +62,46 @@ export function ProductForm({
         label="Product Name"
         required
         placeholder="Enter product name"
-        value={formData.name || ''}
-        onChangeText={(text) => handleFieldChange('name', text)}
+        value={formData.name || ""}
+        onChangeText={(text) => handleFieldChange("name", text)}
       />
 
       {!!formData.type && (
         <LabeledInput
           label="Type"
           placeholder="Enter product type"
-          value={formData.type || ''}
-          onChangeText={(text) => handleFieldChange('type', text)}
+          value={formData.type || ""}
+          onChangeText={(text) => handleFieldChange("type", text)}
         />
       )}
 
       <CategoryPicker
         value={formData.category}
-        onValueChange={(text) => handleFieldChange('category', text)}
+        onValueChange={(text) => handleFieldChange("category", text)}
         required
       />
       <LabeledInput
         label="Type"
         placeholder="Enter product type"
-        value={formData.type || ''}
-        onChangeText={(text) => handleFieldChange('type', text)}
+        value={formData.type || ""}
+        onChangeText={(text) => handleFieldChange("type", text)}
       />
 
       <LabeledInput
         label="Price"
         required
         placeholder="e.g. 40.00 or 3 for 5"
-        value={formData.price || ''}
-        onChangeText={(text) => handleFieldChange('price', text)}
+        value={formData.price || ""}
+        onChangeText={(text) => handleFieldChange("price", text)}
       />
 
       <LabeledInput
         label="Duration (seconds)"
         placeholder="Enter duration"
         keyboardType="number-pad"
-        value={formData.duration_seconds?.toString() || ''}
+        value={formData.duration_seconds?.toString() || ""}
         onChangeText={(text) =>
-          handleFieldChange('duration_seconds', text ? parseInt(text) : 0)
+          handleFieldChange("duration_seconds", text ? parseInt(text) : 0)
         }
       />
 
@@ -109,17 +109,17 @@ export function ProductForm({
         label="Stock Quantity"
         placeholder="Enter stock amount"
         keyboardType="number-pad"
-        value={formData.stock_quantity?.toString() || ''}
+        value={formData.stock_quantity?.toString() || ""}
         onChangeText={(text) =>
-          handleFieldChange('stock_quantity', text ? parseInt(text) : 0)
+          handleFieldChange("stock_quantity", text ? parseInt(text) : 0)
         }
       />
 
       <LabeledInput
         label="Description"
         placeholder="Enter product description"
-        value={formData.description || ''}
-        onChangeText={(text) => handleFieldChange('description', text)}
+        value={formData.description || ""}
+        onChangeText={(text) => handleFieldChange("description", text)}
         multiline
         numberOfLines={3}
       />
@@ -127,26 +127,29 @@ export function ProductForm({
       <LabeledInput
         label="Effects"
         placeholder="comma-separated effects"
-        value={formData.effects?.join(', ') || ''}
+        value={formData.effects?.join(", ") || ""}
         onChangeText={(text) =>
-          handleFieldChange('effects', text.split(',').map((t) => t.trim()))
+          handleFieldChange(
+            "effects",
+            text.split(",").map((t) => t.trim()),
+          )
         }
       />
 
       <LabeledInput
         label="Video File Name"
         placeholder="Optional video file name"
-        value={formData.video_url || ''}
-        onChangeText={(text) => handleFieldChange('video_url', text)}
+        value={formData.video_url || ""}
+        onChangeText={(text) => handleFieldChange("video_url", text)}
       />
 
-        <LabeledInput
-          label="Image File Name"
-          placeholder="Optional image file name"
-          value={formData.image_url || ''}
-          onChangeText={(text) => handleFieldChange('image_url', text)}
-        />
-      
+      <LabeledInput
+        label="Image File Name"
+        placeholder="Optional image file name"
+        value={formData.image_url || ""}
+        onChangeText={(text) => handleFieldChange("image_url", text)}
+      />
+
       <ThemedView style={styles.buttonGroup}>
         <Pressable
           style={({ pressed }) => [
@@ -156,9 +159,14 @@ export function ProductForm({
             isSubmitting && styles.disabledButton,
           ]}
           onPress={onSubmit}
-          disabled={isSubmitting}>
+          disabled={isSubmitting}
+        >
           <ThemedText style={[styles.buttonText, { color: theme.background }]}>
-            {isSubmitting ? (isEditMode ? 'Saving...' : 'Adding...') : submitButtonText}
+            {isSubmitting
+              ? isEditMode
+                ? "Saving..."
+                : "Adding..."
+              : submitButtonText}
           </ThemedText>
         </Pressable>
 
@@ -169,7 +177,8 @@ export function ProductForm({
               { backgroundColor: theme.backgroundSelected },
               pressed && styles.pressedButton,
             ]}
-            onPress={onCancel}>
+            onPress={onCancel}
+          >
             <ThemedText style={styles.cancelButtonText}>Cancel</ThemedText>
           </Pressable>
         ) : (
@@ -181,16 +190,17 @@ export function ProductForm({
                 pressed && styles.pressedButton,
               ]}
               onPress={() => {
-                handleFieldChange('name', '');
-                handleFieldChange('category', '');
-                handleFieldChange('price', '');
-                handleFieldChange('description', '');
-                handleFieldChange('duration_seconds', 0);
-                handleFieldChange('stock_quantity', 0);
-                handleFieldChange('effects', []);
-                handleFieldChange('video_url', '');
-                handleFieldChange('image_url', '');
-              }}>
+                handleFieldChange("name", "");
+                handleFieldChange("category", "");
+                handleFieldChange("price", "");
+                handleFieldChange("description", "");
+                handleFieldChange("duration_seconds", 0);
+                handleFieldChange("stock_quantity", 0);
+                handleFieldChange("effects", []);
+                handleFieldChange("video_url", "");
+                handleFieldChange("image_url", "");
+              }}
+            >
               <ThemedText style={styles.resetButtonText}>Reset</ThemedText>
             </Pressable>
           )
@@ -203,14 +213,14 @@ export function ProductForm({
               pressed && styles.pressedButton,
             ]}
             onPress={onDelete}
-            disabled={isDeleting}>
+            disabled={isDeleting}
+          >
             <ThemedText style={styles.deleteButtonText}>
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? "Deleting..." : "Delete"}
             </ThemedText>
           </Pressable>
         )}
       </ThemedView>
-
     </ThemedView>
   );
 }
@@ -225,7 +235,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.two,
   },
   buttonGroup: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: Spacing.two,
     marginVertical: Spacing.two,
   },
@@ -233,44 +243,44 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: Spacing.two,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   resetButton: {
     flex: 1,
     paddingVertical: Spacing.two,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   cancelButton: {
     flex: 1,
     paddingVertical: Spacing.two,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   deleteButton: {
     flex: 1,
     paddingVertical: Spacing.two,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: "red",
   },
   buttonText: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 14,
   },
   resetButtonText: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 14,
   },
   cancelButtonText: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 14,
   },
   deleteButtonText: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 14,
-    color: 'red',
+    color: "red",
   },
   pressedButton: {
     opacity: 0.7,

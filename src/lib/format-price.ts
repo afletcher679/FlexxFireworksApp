@@ -1,7 +1,7 @@
 export function formatPriceDisplay(value: string | number): string {
-  const raw = String(value ?? '').trim();
+  const raw = String(value ?? "").trim();
 
-  if (!raw) return '$0';
+  if (!raw) return "$0";
 
   if (/^\d+(\.\d+)?$/.test(raw)) {
     return `$${raw}`;

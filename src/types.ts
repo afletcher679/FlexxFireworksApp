@@ -6,17 +6,17 @@
  * Defines the available product categories
  */
 export type Category =
-  | 'Cake'
-  | 'Fountain'
-  | 'Roman Candle'
-  | 'Mortar'
-  | 'Sparkler'
-  | 'Novelty'
-  | 'Rocket'
-  | 'Candle'
-  | 'Firecracker'
-  | 'Missile base'
-  | 'Single shot';
+  | "Cake"
+  | "Fountain"
+  | "Roman Candle"
+  | "Mortar"
+  | "Sparkler"
+  | "Novelty"
+  | "Rocket"
+  | "Candle"
+  | "Firecracker"
+  | "Missile base"
+  | "Single shot";
 
 /**
  * Firework interface

@@ -6,13 +6,13 @@
 // - Multiple sorting options (name A-Z, price ascending/descending)
 // Uses useMemo for performance optimization to avoid unnecessary recalculations
 
-import { useState, useMemo } from 'react';
-import { Firework } from '../types';
+import { useState, useMemo } from "react";
+import { Firework } from "../types";
 
 // Category type definition
 export type Category = string; // Update this based on your actual categories
 
-export type SortOptions = 'price-asc' | 'price-desc' | 'name';
+export type SortOptions = "price-asc" | "price-desc" | "name";
 
 export interface Filters {
   query: string;
@@ -21,7 +21,7 @@ export interface Filters {
 }
 
 const EMPTY_FILTERS: Filters = {
-  query: '',
+  query: "",
   categories: new Set(),
   maxPrice: null,
 };
@@ -32,10 +32,10 @@ function matchesQuery(firework: Firework, query: string): boolean {
   if (!query) return true;
   const haystack = [
     firework.name,
-    firework.description ?? '',
+    firework.description ?? "",
     ...(firework.tags ?? []),
   ]
-    .join(' ')
+    .join(" ")
     .toLowerCase();
   return query
     .toLowerCase()
@@ -46,7 +46,7 @@ function matchesQuery(firework: Firework, query: string): boolean {
 
 export function useProductFilter(products: Firework[]) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
-  const [sortKey, setSortKey] = useState<SortOptions>('name');
+  const [sortKey, setSortKey] = useState<SortOptions>("name");
 
   // Memoize filtered and sorted products to avoid unnecessary recalculations
   // Only recalculates when products, filters, or sortKey change
@@ -66,11 +66,11 @@ export function useProductFilter(products: Firework[]) {
 
     // Sort by selected option
     switch (sortKey) {
-      case 'price-asc':
+      case "price-asc":
         return [...result].sort((a, b) => a.price - b.price);
-      case 'price-desc':
+      case "price-desc":
         return [...result].sort((a, b) => b.price - a.price);
-      case 'name':
+      case "name":
         return [...result].sort((a, b) => a.name.localeCompare(b.name));
     }
   }, [products, filters, sortKey]);

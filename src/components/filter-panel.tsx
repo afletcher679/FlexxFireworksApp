@@ -5,14 +5,14 @@
 // 3. Price range slider to set maximum price
 // Updates parent component with filter changes in real-time
 
-import { useState, useEffect } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import Slider from '@react-native-community/slider';
-import { useTheme } from '../hooks/use-theme';
-import { getCategories } from '../lib/categories';
-import type { Filters, SortOptions } from '../hooks/use-product-filter';
-import type { Category } from '../types';
+import { useState, useEffect } from "react";
+import { View, Text, Pressable, StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import Slider from "@react-native-community/slider";
+import { useTheme } from "../hooks/use-theme";
+import { getCategories } from "../lib/categories";
+import type { Filters, SortOptions } from "../hooks/use-product-filter";
+import type { Category } from "../types";
 
 interface FilterPanelProps {
   filters: Filters;
@@ -34,21 +34,21 @@ const styles = StyleSheet.create({
   // Filter label text
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
   },
   // Sort dropdown container
   pickerContainer: {
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   picker: {
     height: 50,
   },
   // Category chips container
   chipRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 8,
   },
   // Individual chip styling
@@ -56,12 +56,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   chipText: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   // Selected chip styling
   chipSelected: {
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   slider: {
-    width: '100%',
+    width: "100%",
     height: 40,
   },
 });
@@ -91,7 +91,7 @@ export function FilterPanel({
   useEffect(() => {
     getCategories()
       .then(setCategories)
-      .catch((error) => console.error('Failed to load categories:', error));
+      .catch((error) => console.error("Failed to load categories:", error));
   }, []);
 
   // Toggle category selection: add or remove from active categories
@@ -107,7 +107,10 @@ export function FilterPanel({
 
   // Update max price filter, setting to null if user reaches the ceiling
   const onMaxPriceChange = (value: number) => {
-    setFilters({ ...filters, maxPrice: value >= maxPriceCeiling ? null : value });
+    setFilters({
+      ...filters,
+      maxPrice: value >= maxPriceCeiling ? null : value,
+    });
   };
 
   // Display current max price or the ceiling if no filter is set
@@ -130,7 +133,12 @@ export function FilterPanel({
       {/* Sort dropdown with three options */}
       <View style={styles.section}>
         <Text style={themedStyles.label}>Sort</Text>
-        <View style={[styles.pickerContainer, { backgroundColor: theme.inputBackground }]}>
+        <View
+          style={[
+            styles.pickerContainer,
+            { backgroundColor: theme.inputBackground },
+          ]}
+        >
           <Picker
             style={styles.picker}
             selectedValue={sortOption}
@@ -153,11 +161,19 @@ export function FilterPanel({
             return (
               <Pressable
                 key={category}
-                style={isSelected ? themedStyles.chipSelected : themedStyles.chip}
+                style={
+                  isSelected ? themedStyles.chipSelected : themedStyles.chip
+                }
                 onPress={() => toggleCategory(category)}
               >
-                <Text style={isSelected ? themedStyles.chipSelectedText : themedStyles.chipText}>
-                  {category.replace('-', ' ')}
+                <Text
+                  style={
+                    isSelected
+                      ? themedStyles.chipSelectedText
+                      : themedStyles.chipText
+                  }
+                >
+                  {category.replace("-", " ")}
                 </Text>
               </Pressable>
             );
@@ -170,7 +186,7 @@ export function FilterPanel({
         {maxPriceCeiling !== undefined && (
           <Text style={themedStyles.label}>
             Max Price: ${displayedMax.toFixed(0)}
-            {filters.maxPrice !== null && ' (custom)'}
+            {filters.maxPrice !== null && " (custom)"}
           </Text>
         )}
         <View style={styles.sliderContainer}>

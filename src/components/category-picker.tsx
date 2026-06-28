@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { ThemedText } from '../components/themed-text';
-import { ThemedView } from '../components/themed-view';
-import { Spacing } from '../constants/theme';
-import { useTheme } from '../hooks/use-theme';
-import { getCategories } from '../lib/categories';
-import { Category } from '../types';
+import { useState, useEffect } from "react";
+import { StyleSheet } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { ThemedText } from "../components/themed-text";
+import { ThemedView } from "../components/themed-view";
+import { Spacing } from "../constants/theme";
+import { useTheme } from "../hooks/use-theme";
+import { getCategories } from "../lib/categories";
+import { Category } from "../types";
 
 interface CategoryPickerProps {
   value: string;
@@ -14,7 +14,11 @@ interface CategoryPickerProps {
   required?: boolean;
 }
 
-export function CategoryPicker({ value, onValueChange, required }: CategoryPickerProps) {
+export function CategoryPicker({
+  value,
+  onValueChange,
+  required,
+}: CategoryPickerProps) {
   const theme = useTheme();
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +29,7 @@ export function CategoryPicker({ value, onValueChange, required }: CategoryPicke
         const cats = await getCategories();
         setCategories(cats);
       } catch (error) {
-        console.error('Failed to load categories:', error);
+        console.error("Failed to load categories:", error);
       } finally {
         setIsLoading(false);
       }
@@ -67,14 +71,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   required: {
-    color: '#FF3B30',
+    color: "#FF3B30",
   },
   picker: {
     borderWidth: 1,
     borderRadius: 6,
-    borderColor: '#D0D0D0',
+    borderColor: "#D0D0D0",
   },
 });

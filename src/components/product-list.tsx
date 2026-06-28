@@ -2,10 +2,10 @@
 // Renders a list of firework products using the ProductCard component.
 // Shows an empty state message when no products match the current filters.
 
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useTheme } from '../hooks/use-theme';
-import { ProductCard } from './product-card';
-import type { Firework } from '../types';
+import { View, Text, FlatList, StyleSheet } from "react-native";
+import { useTheme } from "../hooks/use-theme";
+import { ProductCard } from "./product-card";
+import type { Firework } from "../types";
 
 interface ProductListProps {
   products: Firework[]; // Array of firework products to display
@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
   // Empty state container
   emptyStateContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 40,
   },
   // Empty state text
@@ -33,7 +33,10 @@ export function ProductList({ products }: ProductListProps) {
   const theme = useTheme();
 
   const themedStyles = {
-    emptyStateContainer: [styles.emptyStateContainer, { backgroundColor: theme.background }],
+    emptyStateContainer: [
+      styles.emptyStateContainer,
+      { backgroundColor: theme.background },
+    ],
     emptyStateText: [styles.emptyStateText, { color: theme.textMuted }],
   };
 

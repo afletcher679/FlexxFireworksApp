@@ -5,14 +5,14 @@
 // - Description and tags
 // - Expandable details with a toggle button
 
-import { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Collapsible } from '../components/ui/collapsible';
-import type { Firework } from '../types';
-import { useTheme } from '../hooks/use-theme';
-import { ProductVideo } from '../components/product-video';
-import { ProductImage } from '../components/product-image';
-import { formatPriceDisplay } from '../lib/format-price';
+import { useState } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Collapsible } from "../components/ui/collapsible";
+import type { Firework } from "../types";
+import { useTheme } from "../hooks/use-theme";
+import { ProductVideo } from "../components/product-video";
+import { ProductImage } from "../components/product-image";
+import { formatPriceDisplay } from "../lib/format-price";
 
 interface ProductCardProps {
   product: Firework; // The firework product to display
@@ -25,7 +25,10 @@ export function ProductCard({ product }: ProductCardProps) {
 
   // Dynamic styles based on theme
   const themedStyles = {
-    card: [styles.card, { backgroundColor: theme.background, borderColor: theme.border }],
+    card: [
+      styles.card,
+      { backgroundColor: theme.background, borderColor: theme.border },
+    ],
     metaBadge: [styles.metaBadge, { backgroundColor: theme.inputBackground }],
     metaBadgeText: [styles.metaBadgeText, { color: theme.textMuted }],
     productName: [styles.productName, { color: theme.text }],
@@ -38,7 +41,12 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <View style={[themedStyles.card, { borderColor: theme.accentSecondary, borderWidth: 1 }]}>
+    <View
+      style={[
+        themedStyles.card,
+        { borderColor: theme.accentSecondary, borderWidth: 1 },
+      ]}
+    >
       {/* Image and Info Section */}
       <View style={styles.contentContainer}>
         {/* Product Image on the left */}
@@ -47,18 +55,22 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Product Info on the right */}
         <View style={styles.infoContainer}>
           <Text style={themedStyles.productName}>{product.name}</Text>
-          <Text style={themedStyles.productPrice}>{formatPriceDisplay(product.price)}</Text>
+          <Text style={themedStyles.productPrice}>
+            {formatPriceDisplay(product.price)}
+          </Text>
 
           {/* Meta information: category, type, and effects */}
           <View style={styles.metaSection}>
             <View style={styles.metaRow}>
               <View style={themedStyles.metaBadge}>
                 <Text style={themedStyles.metaBadgeText}>
-                  {product.category.replace('-', ' ')}
+                  {product.category.replace("-", " ")}
                 </Text>
               </View>
               {!!product.type && (
-                <Text style={[themedStyles.productBrand, styles.typeText]}>{product.type}</Text>
+                <Text style={[themedStyles.productBrand, styles.typeText]}>
+                  {product.type}
+                </Text>
               )}
             </View>
 
@@ -85,25 +97,25 @@ export function ProductCard({ product }: ProductCardProps) {
 
           {/* Optional description field */}
           {!!product.description && (
-            <Text style={[themedStyles.description, styles.descriptionText]}>{product.description}</Text>
+            <Text style={[themedStyles.description, styles.descriptionText]}>
+              {product.description}
+            </Text>
           )}
         </View>
       </View>
-      
-            {!!product.video_url && (
-        <Collapsible title={isVideoShown ? 'Hide Demo' : 'Show Demo'} >
-          <View style={[styles.videoContainer, {borderColor: theme.accent}]}>
+
+      {!!product.video_url && (
+        <Collapsible title={isVideoShown ? "Hide Demo" : "Show Demo"}>
+          <View style={[styles.videoContainer, { borderColor: theme.accent }]}>
             <ProductVideo videoUrl={product.video_url} />
           </View>
         </Collapsible>
       )}
-
     </View>
   );
 }
 
 export default ProductCard;
-
 
 const styles = StyleSheet.create({
   // Main card container
@@ -115,7 +127,7 @@ const styles = StyleSheet.create({
   },
   // Content container with image and info side by side
   contentContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginBottom: 12,
   },
@@ -126,7 +138,7 @@ const styles = StyleSheet.create({
   // Product name text
   productName: {
     fontSize: 17,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 2,
   },
   // Brand/Type text
@@ -137,7 +149,7 @@ const styles = StyleSheet.create({
   // Price text
   productPrice: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
   },
   // Meta section container
@@ -146,9 +158,9 @@ const styles = StyleSheet.create({
   },
   // Meta information first row (category and type)
   metaRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   // Category badge styling
   metaBadge: {
@@ -162,7 +174,7 @@ const styles = StyleSheet.create({
   // Type text styling (displayed inline with meta, no badge)
   typeText: {
     marginBottom: 0,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   // Description text
   description: {
@@ -175,8 +187,8 @@ const styles = StyleSheet.create({
   },
   // Tags container
   tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 6,
     marginTop: 8,
   },
@@ -195,13 +207,13 @@ const styles = StyleSheet.create({
   },
   // Video player styling
   videoContainer: {
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
     aspectRatio: 16 / 9,
     borderRadius: 10,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
     borderWidth: 1,
   },
   // Toggle button styling
@@ -209,12 +221,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 4,
   },
   expandButtonText: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#fff',
+    fontWeight: "600",
+    color: "#fff",
   },
 });

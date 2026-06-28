@@ -3,42 +3,42 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-import '../global.css';
+import "../global.css";
 
-import { Platform } from 'react-native';
+import { Platform } from "react-native";
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-    textMuted: '#A0A0A6',
-    inputBackground: '#FAFAFA',
-    border: '#D0D0D0',
-    accent: '#007AFF',
-    accentSecondary: '#FF9500',
-    accentSoft: '#E8F4FD',
-    success: '#34C759',
-    error: '#FF3B30',
-    tint: '#007AFF',
+    text: "#000000",
+    background: "#ffffff",
+    backgroundElement: "#F0F0F3",
+    backgroundSelected: "#E0E1E6",
+    textSecondary: "#60646C",
+    textMuted: "#A0A0A6",
+    inputBackground: "#FAFAFA",
+    border: "#D0D0D0",
+    accent: "#2b59c3",
+    accentSecondary: "#f15025",
+    accentSoft: "#E8F4FD",
+    success: "#34C759",
+    error: "#FF3B30",
+    tint: "#2b59c3",
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-    textMuted: '#686C72',
-    inputBackground: '#1A1A1E',
-    border: '#3A3A3E',
-    accent: '#0A84FF',
-    accentSecondary: '#FF9500',
-    accentSoft: '#1F3A52',
-    success: '#34C759',
-    error: '#FF453A',
-    tint: '#0A84FF',
+    text: "#ffffff",
+    background: "#000000",
+    backgroundElement: "#212225",
+    backgroundSelected: "#2E3135",
+    textSecondary: "#B0B4BA",
+    textMuted: "#686C72",
+    inputBackground: "#1A1A1E",
+    border: "#3A3A3E",
+    accent: "#0A84FF",
+    accentSecondary: "#FF9500",
+    accentSoft: "#1F3A52",
+    success: "#34C759",
+    error: "#FF453A",
+    tint: "#0A84FF",
   },
 } as const;
 
@@ -47,25 +47,25 @@ export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
+    sans: "system-ui",
     /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
+    serif: "ui-serif",
     /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
+    rounded: "ui-rounded",
     /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
+    mono: "ui-monospace",
   },
   default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
+    sans: "normal",
+    serif: "serif",
+    rounded: "normal",
+    mono: "monospace",
   },
   web: {
-    sans: 'var(--font-display)',
-    serif: 'var(--font-serif)',
-    rounded: 'var(--font-rounded)',
-    mono: 'var(--font-mono)',
+    sans: "var(--font-display)",
+    serif: "var(--font-serif)",
+    rounded: "var(--font-rounded)",
+    mono: "var(--font-mono)",
   },
 });
 

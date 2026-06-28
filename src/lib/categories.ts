@@ -1,5 +1,5 @@
-import { supabase } from '../lib/supabase';
-import { Category } from '../types';
+import { supabase } from "../lib/supabase";
+import { Category } from "../types";
 
 let cachedCategories: Category[] | null = null;
 
@@ -9,15 +9,15 @@ let cachedCategories: Category[] | null = null;
  */
 export async function fetchCategoriesFromDatabase(): Promise<Category[]> {
   try {
-    const { data, error } = await supabase.rpc('get_category_enum_values');
+    const { data, error } = await supabase.rpc("get_category_enum_values");
 
     if (error) throw error;
-    
-    const categories = (data as string[]).map(val => val as Category);
+
+    const categories = (data as string[]).map((val) => val as Category);
     cachedCategories = categories;
     return categories;
   } catch (error) {
-    console.error('Error fetching categories from database:', error);
+    console.error("Error fetching categories from database:", error);
     throw error;
   }
 }

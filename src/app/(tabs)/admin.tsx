@@ -1,35 +1,41 @@
-import { useState, useEffect, useCallback } from 'react';
-import { ScrollView, StyleSheet, TextInput, Pressable, Alert } from 'react-native';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useState, useEffect, useCallback } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  Alert,
+} from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { supabase } from '../../lib/supabase';
-import { ThemedText } from '../../components/themed-text';
-import { ThemedView } from '../../components/themed-view';
-import { InventoryCard } from '../../components/inventory-card';
-import { Spacing } from '../../constants/theme';
-import { useTheme } from '../../hooks/use-theme';
-import { Firework } from '../../types';
-import { Collapsible } from '../../components/ui/collapsible';
-import { useProductFilter } from '../../hooks/use-product-filter';
-import { FilterPanel } from '../../components/filter-panel';
-import SearchBar from '../../components/search-bar';
+import { supabase } from "../../lib/supabase";
+import { ThemedText } from "../../components/themed-text";
+import { ThemedView } from "../../components/themed-view";
+import { InventoryCard } from "../../components/inventory-card";
+import { Spacing } from "../../constants/theme";
+import { useTheme } from "../../hooks/use-theme";
+import { Firework } from "../../types";
+import { Collapsible } from "../../components/ui/collapsible";
+import { useProductFilter } from "../../hooks/use-product-filter";
+import { FilterPanel } from "../../components/filter-panel";
+import SearchBar from "../../components/search-bar";
 
 export default function AdminScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState("");
   const [products, setProducts] = useState<Firework[]>([]);
-  const [email, setEmail] = useState('flexxpyropro@gmail.com');
+  const [email, setEmail] = useState("flexxpyropro@gmail.com");
   const [isLoading, setIsLoading] = useState(false);
-  const [loginError, setLoginError] = useState('');
-  
+  const [loginError, setLoginError] = useState("");
+
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useTheme();
   const insets = {
     ...safeAreaInsets,
     bottom: safeAreaInsets.bottom + 80,
   };
-const router = useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -52,26 +58,24 @@ const router = useRouter();
       };
 
       syncSession();
-    }, [])
+    }, []),
   );
-  
+
   const fetchProducts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('fireworks')
-        .select('*');
+      const { data, error } = await supabase.from("fireworks").select("*");
 
       if (error) throw error;
       const typedData = (data || []) as Firework[];
       setProducts(typedData);
     } catch (error) {
-      console.error('Error fetching fireworks:', error);
+      console.error("Error fetching fireworks:", error);
     }
   };
 
-const handleLogin = async () => {
+  const handleLogin = async () => {
     if (!email || !passwordInput) {
-      Alert.alert('Error', 'Please enter your email and password');
+      Alert.alert("Error", "Please enter your email and password");
       return;
     }
     setIsLoading(true);
@@ -85,24 +89,24 @@ const handleLogin = async () => {
 
       // Check if the signed-in user has the admin role
       const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
         .single();
 
       if (profileError) throw profileError;
 
-      if (profile.role !== 'admin') {
+      if (profile.role !== "admin") {
         await supabase.auth.signOut();
-        Alert.alert('Access Denied', 'You do not have admin permissions');
+        Alert.alert("Access Denied", "You do not have admin permissions");
         return;
       }
 
       setIsAuthenticated(true);
-      setPasswordInput('');
-      setEmail('');
+      setPasswordInput("");
+      setEmail("");
     } catch (error: any) {
-      setLoginError(error.message || 'Invalid email or password');
+      setLoginError(error.message || "Invalid email or password");
     } finally {
       setIsLoading(false);
     }
@@ -117,7 +121,7 @@ const handleLogin = async () => {
   const handleUpdateProduct = async (updatedProduct: Firework) => {
     try {
       const { data, error } = await supabase
-        .from('fireworks')
+        .from("fireworks")
         .update({
           name: updatedProduct.name,
           category: updatedProduct.category,
@@ -129,48 +133,52 @@ const handleLogin = async () => {
           video_url: updatedProduct.video_url || null,
           image_url: updatedProduct.image_url || null,
         })
-        .eq('id', updatedProduct.id)
-        .select('*')
+        .eq("id", updatedProduct.id)
+        .select("*")
         .single();
 
       if (error) throw error;
       if (!data) {
-        throw new Error('Update did not return a row. Check Supabase RLS UPDATE policy for fireworks.');
+        throw new Error(
+          "Update did not return a row. Check Supabase RLS UPDATE policy for fireworks.",
+        );
       }
 
-      setProducts(prev => prev.map(product => (product.id === data.id ? (data as Firework) : product)));
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === data.id ? (data as Firework) : product,
+        ),
+      );
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error("Error updating product:", error);
       throw error;
     }
   };
 
   const handleDeleteProduct = async (id: number) => {
     try {
-      const { error } = await supabase
-        .from('fireworks')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from("fireworks").delete().eq("id", id);
 
       if (error) throw error;
       fetchProducts();
     } catch (error) {
-      console.error('Error deleting fireworks:', error);
+      console.error("Error deleting fireworks:", error);
       throw error;
     }
   };
 
   const handleAddProduct = () => {
-    router.push('/add-product');
+    router.push("/add-product");
   };
   const { filters, setFilters, sortKey, setSortKey, filteredProducts } =
     useProductFilter(products);
   if (!isAuthenticated) {
     return (
-<ScrollView
+      <ScrollView
         style={[styles.scrollView, { backgroundColor: theme.background }]}
         contentInset={insets}
-        contentContainerStyle={styles.contentContainer}>
+        contentContainerStyle={styles.contentContainer}
+      >
         <ThemedView style={styles.container}>
           <ThemedView style={styles.loginContainer}>
             <ThemedText type="subtitle" style={styles.title}>
@@ -183,7 +191,7 @@ const handleLogin = async () => {
             {loginError ? (
               <ThemedText style={styles.errorText}>{loginError}</ThemedText>
             ) : null}
-{/* Hiding Email for now since we are using a fixed email for admin login
+            {/* Hiding Email for now since we are using a fixed email for admin login
             <TextInput
               style={[
                 styles.passwordInput,
@@ -214,7 +222,10 @@ const handleLogin = async () => {
               placeholderTextColor={theme.textSecondary}
               secureTextEntry={true}
               value={passwordInput}
-              onChangeText={(text) => { setLoginError(''); setPasswordInput(text); }}
+              onChangeText={(text) => {
+                setLoginError("");
+                setPasswordInput(text);
+              }}
             />
 
             <Pressable
@@ -224,9 +235,12 @@ const handleLogin = async () => {
                 pressed && styles.pressed,
               ]}
               onPress={handleLogin}
-              disabled={isLoading}>
-              <ThemedText style={[styles.buttonText, { color: theme.background }]}>
-                {isLoading ? 'Signing in...' : 'Login'}
+              disabled={isLoading}
+            >
+              <ThemedText
+                style={[styles.buttonText, { color: theme.background }]}
+              >
+                {isLoading ? "Signing in..." : "Login"}
               </ThemedText>
             </Pressable>
           </ThemedView>
@@ -237,48 +251,57 @@ const handleLogin = async () => {
 
   return (
     <ScrollView
-      style={[styles.scrollView, { backgroundColor: theme.background }]}>
+      style={[styles.scrollView, { backgroundColor: theme.background }]}
+    >
       <ThemedView style={styles.container}>
-        <ThemedView style={[styles.headerContainer, {paddingTop: insets.top + Spacing.six }]}>
+        <ThemedView
+          style={[
+            styles.headerContainer,
+            { paddingTop: insets.top + Spacing.six },
+          ]}
+        >
           <ThemedText type="subtitle">Inventory Management</ThemedText>
           <ThemedView style={styles.buttonRow}>
-                <Pressable
-                  style={({ pressed }) => [
-                    styles.addButton,
-                    { backgroundColor: theme.accent },
-                    pressed && styles.pressed,
-                  ]}
-                  onPress={handleAddProduct}>
-      <ThemedText style={[styles.buttonText, { color: theme.background }]}>
-        Add Product
-      </ThemedText>
-    </Pressable>
-  
-  <Pressable
-    style={({ pressed }) => [
-      styles.headerButton,
-      { backgroundColor: theme.backgroundElement },
-      pressed && styles.pressed,
-    ]}
-    onPress={handleLogout}>
-    <ThemedText style={styles.logoutText}>Logout</ThemedText>
-  </Pressable>
-</ThemedView>
+            <Pressable
+              style={({ pressed }) => [
+                styles.addButton,
+                { backgroundColor: theme.accent },
+                pressed && styles.pressed,
+              ]}
+              onPress={handleAddProduct}
+            >
+              <ThemedText
+                style={[styles.buttonText, { color: theme.background }]}
+              >
+                Add Product
+              </ThemedText>
+            </Pressable>
 
+            <Pressable
+              style={({ pressed }) => [
+                styles.headerButton,
+                { backgroundColor: theme.backgroundElement },
+                pressed && styles.pressed,
+              ]}
+              onPress={handleLogout}
+            >
+              <ThemedText style={styles.logoutText}>Logout</ThemedText>
+            </Pressable>
+          </ThemedView>
         </ThemedView>
-                <Collapsible title="Search, Filter, and Sort">
-                  <SearchBar
-                    query={filters.query}
-                    onQueryChange={query => setFilters({ ...filters, query })}
-                  />
-                  <FilterPanel
-                    filters={filters}
-                    setFilters={setFilters}
-                    sortOption={sortKey}
-                    setSortOption={setSortKey}
-                  />
-                </Collapsible>
-                {/* Products List */}
+        <Collapsible title="Search, Filter, and Sort">
+          <SearchBar
+            query={filters.query}
+            onQueryChange={(query) => setFilters({ ...filters, query })}
+          />
+          <FilterPanel
+            filters={filters}
+            setFilters={setFilters}
+            sortOption={sortKey}
+            setSortOption={setSortKey}
+          />
+        </Collapsible>
+        {/* Products List */}
         <ThemedView style={styles.contentArea}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             Current Fireworks ({products.length})
@@ -303,25 +326,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
   },
   container: {
     flexGrow: 1,
-    width: '100%',
+    width: "100%",
   },
   loginContainer: {
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.six,
     gap: Spacing.four,
-    justifyContent: 'center',
+    justifyContent: "center",
     minHeight: 400,
   },
   title: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   subtitle: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   passwordInput: {
     borderWidth: 1,
@@ -333,19 +356,19 @@ const styles = StyleSheet.create({
   loginButton: {
     paddingVertical: Spacing.three,
     borderRadius: Spacing.two,
-    alignItems: 'center',
+    alignItems: "center",
   },
   pressed: {
     opacity: 0.7,
   },
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.four,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   logoutButton: {
     paddingHorizontal: Spacing.three,
@@ -353,7 +376,7 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.two,
   },
   buttonRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: Spacing.two,
   },
   headerButton: {
@@ -384,10 +407,10 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.three,
     borderRadius: Spacing.two,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   productItem: {
@@ -401,9 +424,9 @@ const styles = StyleSheet.create({
     padding: Spacing.two,
     borderRadius: Spacing.one,
   },
-    errorText: {
-    color: '#ef4444',
+  errorText: {
+    color: "#ef4444",
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
