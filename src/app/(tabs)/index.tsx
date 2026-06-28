@@ -1,24 +1,17 @@
-import { useMemo, useState, useCallback } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-  Pressable,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFocusEffect } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
+import { ActivityIndicator, ScrollView, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { ProductList } from "../../components/product-list";
+import { ProductSearchFilterControls } from "../../components/product-search-filter-controls";
+import { ThemedText } from "../../components/themed-text";
+import { ThemedView } from "../../components/themed-view";
+import { Spacing } from "../../constants/theme";
+import { useProductFilter } from "../../hooks/use-product-filter";
+import { useTheme } from "../../hooks/use-theme";
 import { supabase } from "../../lib/supabase";
 import type { Firework } from "../../types";
-import { useProductFilter } from "../../hooks/use-product-filter";
-import { SearchBar } from "../../components/search-bar";
-import { FilterPanel } from "../../components/filter-panel";
-import { ProductList } from "../../components/product-list";
-import { ThemedView } from "../../components/themed-view";
-import { Collapsible } from "../../components/ui/collapsible";
-import { Spacing } from "../../constants/theme";
-import { useTheme } from "../../hooks/use-theme";
-import { ThemedText } from "../../components/themed-text";
 
 export default function CatalogScreen() {
   const insets = useSafeAreaInsets();
@@ -93,19 +86,13 @@ export default function CatalogScreen() {
       <ThemedView
         style={[styles.stickyControls, { borderBottomColor: theme.border }]}
       >
-        <Collapsible title="Search, Filter, and Sort">
-          <SearchBar
-            query={filters.query}
-            onQueryChange={(query) => setFilters({ ...filters, query })}
-          />
-          <FilterPanel
-            filters={filters}
-            setFilters={setFilters}
-            sortOption={sortKey}
-            setSortOption={setSortKey}
-            maxPriceCeiling={maxPriceCeiling}
-          />
-        </Collapsible>
+        <ProductSearchFilterControls
+          filters={filters}
+          setFilters={setFilters}
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+          maxPriceCeiling={maxPriceCeiling}
+        />
       </ThemedView>
 
       {/* Main scrollable content */}

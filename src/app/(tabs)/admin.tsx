@@ -1,25 +1,23 @@
-import { useState, useEffect, useCallback } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
+  Alert,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
-  Pressable,
-  Alert,
 } from "react-native";
-import { useFocusEffect, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { supabase } from "../../lib/supabase";
+import { InventoryCard } from "../../components/inventory-card";
+import { ProductSearchFilterControls } from "../../components/product-search-filter-controls";
 import { ThemedText } from "../../components/themed-text";
 import { ThemedView } from "../../components/themed-view";
-import { InventoryCard } from "../../components/inventory-card";
 import { Spacing } from "../../constants/theme";
-import { useTheme } from "../../hooks/use-theme";
-import { Firework } from "../../types";
-import { Collapsible } from "../../components/ui/collapsible";
 import { useProductFilter } from "../../hooks/use-product-filter";
-import { FilterPanel } from "../../components/filter-panel";
-import SearchBar from "../../components/search-bar";
+import { useTheme } from "../../hooks/use-theme";
+import { supabase } from "../../lib/supabase";
+import { Firework } from "../../types";
 
 export default function AdminScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -170,8 +168,10 @@ export default function AdminScreen() {
   const handleAddProduct = () => {
     router.push("/add-product");
   };
+
   const { filters, setFilters, sortKey, setSortKey, filteredProducts } =
     useProductFilter(products);
+
   if (!isAuthenticated) {
     return (
       <ScrollView
@@ -260,7 +260,13 @@ export default function AdminScreen() {
             { paddingTop: insets.top + Spacing.six },
           ]}
         >
-          <ThemedText type="subtitle">Inventory Management</ThemedText>
+          <ThemedText
+            type="subtitle"
+            style={styles.headerTitle}
+            numberOfLines={2}
+          >
+            Inventory Management
+          </ThemedText>
           <ThemedView style={styles.buttonRow}>
             <Pressable
               style={({ pressed }) => [
@@ -289,18 +295,12 @@ export default function AdminScreen() {
             </Pressable>
           </ThemedView>
         </ThemedView>
-        <Collapsible title="Search, Filter, and Sort">
-          <SearchBar
-            query={filters.query}
-            onQueryChange={(query) => setFilters({ ...filters, query })}
-          />
-          <FilterPanel
-            filters={filters}
-            setFilters={setFilters}
-            sortOption={sortKey}
-            setSortOption={setSortKey}
-          />
-        </Collapsible>
+        <ProductSearchFilterControls
+          filters={filters}
+          setFilters={setFilters}
+          sortKey={sortKey}
+          setSortKey={setSortKey}
+        />
         {/* Products List */}
         <ThemedView style={styles.contentArea}>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
@@ -362,13 +362,15 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.four,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: Spacing.two,
+    padding: Spacing.four,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+  },
+  headerTitle: {
+    width: "100%",
   },
   logoutButton: {
     paddingHorizontal: Spacing.three,
@@ -377,7 +379,9 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: "row",
+    alignItems: "center",
     gap: Spacing.two,
+    width: "100%",
   },
   headerButton: {
     paddingHorizontal: Spacing.three,
@@ -388,8 +392,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   contentArea: {
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.four,
+    padding: Spacing.four,
     gap: Spacing.three,
   },
   sectionTitle: {
@@ -403,7 +406,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   addButton: {
-    flex: 1,
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.three,
     borderRadius: Spacing.two,
