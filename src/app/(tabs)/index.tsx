@@ -122,8 +122,7 @@ const styles = StyleSheet.create({
     gap: Spacing.one,
   },
   stickyControls: {
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.four,
+    padding: Spacing.four,
     gap: Spacing.three,
     borderBottomWidth: 1,
   },
@@ -131,7 +130,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   main: {
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.four,
+    padding: Spacing.four,
   },
 });

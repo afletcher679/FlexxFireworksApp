@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { StyleSheet, Pressable, Alert, Platform, View } from "react-native";
+import { Alert, Platform, Pressable, StyleSheet } from "react-native";
 
-import { Firework } from "../types";
-import { ThemedText } from "../components/themed-text";
-import { ThemedView } from "../components/themed-view";
 import { ProductForm } from "../components/product-form";
 import { ProductImage } from "../components/product-image";
+import { ThemedText } from "../components/themed-text";
+import { ThemedView } from "../components/themed-view";
 import { Spacing } from "../constants/theme";
 import { useTheme } from "../hooks/use-theme";
 import { formatPriceDisplay } from "../lib/format-price";
+import { Firework } from "../types";
 
 interface InventoryCardProps {
   product: Firework;
@@ -110,6 +110,7 @@ export function InventoryCard({
         style={[
           styles.cardContainer,
           { backgroundColor: theme.backgroundElement },
+          { borderWidth: 2, borderColor: theme.sectionBorder },
         ]}
       >
         {/* Title */}

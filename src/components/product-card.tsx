@@ -6,13 +6,13 @@
 // - Expandable details with a toggle button
 
 import { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { Collapsible } from "../components/ui/collapsible";
-import type { Firework } from "../types";
-import { useTheme } from "../hooks/use-theme";
-import { ProductVideo } from "../components/product-video";
+import { StyleSheet, Text, View } from "react-native";
 import { ProductImage } from "../components/product-image";
+import { ProductVideo } from "../components/product-video";
+import { Collapsible } from "../components/ui/collapsible";
+import { useTheme } from "../hooks/use-theme";
 import { formatPriceDisplay } from "../lib/format-price";
+import type { Firework } from "../types";
 
 interface ProductCardProps {
   product: Firework; // The firework product to display
@@ -27,7 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const themedStyles = {
     card: [
       styles.card,
-      { backgroundColor: theme.background, borderColor: theme.border },
+      { backgroundColor: theme.background, borderColor: theme.accentSecondary },
     ],
     metaBadge: [styles.metaBadge, { backgroundColor: theme.inputBackground }],
     metaBadgeText: [styles.metaBadgeText, { color: theme.textMuted }],
@@ -41,12 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <View
-      style={[
-        themedStyles.card,
-        { borderColor: theme.accentSecondary, borderWidth: 1 },
-      ]}
-    >
+    <View style={themedStyles.card}>
       {/* Image and Info Section */}
       <View style={styles.contentContainer}>
         {/* Product Image on the left */}
@@ -123,7 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
+    borderWidth: 3,
   },
   // Content container with image and info side by side
   contentContainer: {
@@ -214,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    borderWidth: 1,
+    borderWidth: 2,
   },
   // Toggle button styling
   expandButton: {

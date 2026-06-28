@@ -1,9 +1,10 @@
 // product-video.tsx - Video player component for displaying product demo videos
 // Handles video source resolution from local assets or remote URIs
 
-import { Pressable } from "react-native";
+import { useEvent } from "expo";
+import { SymbolView } from "expo-symbols";
 import { VideoView, useVideoPlayer } from "expo-video";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 // Map video file paths to require statements for local assets
 const videoAssets: Record<string, any> = {
@@ -87,8 +88,16 @@ function getVideoSource(videoUrl: string) {
 
 interface ProductVideoProps {
   videoUrl?: string;
+  /**
+   * When true, shows ExoPlayer's built-in controls instead of the
+   * tap-anywhere-to-toggle behavior. Default: false (tap to play/pause).
+   */
+  useNativeControls?: boolean;
 }
-export function ProductVideo({ videoUrl }: ProductVideoProps) {
+export function ProductVideo({
+  videoUrl,
+  useNativeControls = false,
+}: ProductVideoProps) {
   // ✅ Hook called unconditionally BEFORE any return
   const player = useVideoPlayer(
     videoUrl ? getVideoSource(videoUrl) : null,
@@ -96,11 +105,15 @@ export function ProductVideo({ videoUrl }: ProductVideoProps) {
       player.loop = false;
     },
   );
+  // Track play state reactively so we can show/hide the play overlay.
+  const { isPlaying } = useEvent(player, "playingChange", {
+    isPlaying: player.playing,
+  });
 
   // ✅ Conditional return AFTER hook
   if (!videoUrl) return null;
 
-  const handleVideoTap = () => {
+  const handleTap = () => {
     if (player.playing) {
       player.pause();
     } else {
@@ -108,23 +121,85 @@ export function ProductVideo({ videoUrl }: ProductVideoProps) {
     }
   };
 
+  // IMPORTANT: every wrapper in the chain must have a CONCRETE size. The old
+  // bug was an *unstyled* Pressable + VideoView height:"100%", which collapsed
+  // to 0px. Here the Pressable (and View) fill the container, so tap works AND
+  // the video is visible.
+
+  if (useNativeControls) {
+    return (
+      <View style={styles.container}>
+        <VideoView
+          player={player}
+          style={styles.fill}
+          contentFit="contain"
+          nativeControls
+          allowsPictureInPicture={false}
+        />
+      </View>
+    );
+  }
   return (
-    <Pressable onPress={handleVideoTap}>
+    <Pressable style={styles.container} onPress={handleTap}>
+      {/* pointerEvents="none" lets the Pressable receive taps, not the video */}
       <VideoView
         player={player}
-        style={styles.video}
+        style={styles.fill}
         contentFit="contain"
-        nativeControls
+        nativeControls={false}
+        allowsPictureInPicture={false}
+        pointerEvents="none"
       />
+
+      {/* Play overlay shown only while paused */}
+      {!isPlaying && (
+        <View style={styles.overlay} pointerEvents="none">
+          <View style={styles.playBadge}>
+            <SymbolView
+              name={{
+                ios: "play.fill",
+                android: "play_arrow",
+                web: "play_arrow",
+              }}
+              size={28}
+              tintColor="#fff"
+            />
+          </View>
+        </View>
+      )}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  video: {
+  container: {
     width: "100%",
     height: "100%",
+    aspectRatio: 16 / 9, // gives the box a real height derived from its width
     borderRadius: 10,
+    overflow: "hidden",
+    backgroundColor: "#000",
+  },
+  fill: {
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  playBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

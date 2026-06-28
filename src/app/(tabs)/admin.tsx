@@ -295,14 +295,14 @@ export default function AdminScreen() {
             </Pressable>
           </ThemedView>
         </ThemedView>
-        <ProductSearchFilterControls
-          filters={filters}
-          setFilters={setFilters}
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-        />
         {/* Products List */}
         <ThemedView style={styles.contentArea}>
+          <ProductSearchFilterControls
+            filters={filters}
+            setFilters={setFilters}
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+          />
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             Current Fireworks ({products.length})
           </ThemedText>

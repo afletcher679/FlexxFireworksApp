@@ -25,7 +25,7 @@ export function ProductSearchFilterControls({
 }: ProductSearchFilterControlsProps) {
   const theme = useTheme();
   return (
-    <View style={[styles.container, { borderColor: theme.filterBorder }]}>
+    <View style={[styles.container, { borderColor: theme.sectionBorder }]}>
       <Collapsible title={title}>
         <SearchBar
           query={filters.query}

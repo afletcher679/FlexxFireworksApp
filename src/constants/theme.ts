@@ -14,7 +14,7 @@ export const Colors = {
     backgroundElement: "#F0F0F3",
     backgroundSelected: "#E0E1E6",
     textSecondary: "#60646C",
-    textMuted: "#A0A0A6",
+    textMuted: "#3e3e42",
     inputBackground: "#FAFAFA",
     border: "#D0D0D0",
     accent: "#2b59c3",
@@ -23,6 +23,7 @@ export const Colors = {
     success: "#34C759",
     error: "#FF3B30",
     tint: "#2b59c3",
+    sectionBorder: "#272424",
   },
   dark: {
     text: "#ffffff",
@@ -30,7 +31,7 @@ export const Colors = {
     backgroundElement: "#212225",
     backgroundSelected: "#2E3135",
     textSecondary: "#B0B4BA",
-    textMuted: "#686C72",
+    textMuted: "#9ea4ab",
     inputBackground: "#1A1A1E",
     border: "#3A3A3E",
     accent: "#0A84FF",
@@ -39,6 +40,7 @@ export const Colors = {
     success: "#34C759",
     error: "#FF453A",
     tint: "#0A84FF",
+    sectionBorder: "#a9afb7",
   },
 } as const;
 

@@ -5,13 +5,13 @@
 // 3. Price range slider to set maximum price
 // Updates parent component with filter changes in real-time
 
-import { useState, useEffect } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
-import { Picker } from "@react-native-picker/picker";
 import Slider from "@react-native-community/slider";
+import { Picker } from "@react-native-picker/picker";
+import { useEffect, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import type { Filters, SortOptions } from "../hooks/use-product-filter";
 import { useTheme } from "../hooks/use-theme";
 import { getCategories } from "../lib/categories";
-import type { Filters, SortOptions } from "../hooks/use-product-filter";
 import type { Category } from "../types";
 
 interface FilterPanelProps {
@@ -182,26 +182,27 @@ export function FilterPanel({
       </View>
 
       {/* Price range slider with dynamic label showing current max */}
-      <View style={styles.section}>
-        {maxPriceCeiling !== undefined && (
+      {maxPriceCeiling !== undefined && (
+        <View style={styles.section}>
           <Text style={themedStyles.label}>
             Max Price: ${displayedMax.toFixed(0)}
             {filters.maxPrice !== null && " (custom)"}
           </Text>
-        )}
-        <View style={styles.sliderContainer}>
-          <Slider
-            style={styles.slider}
-            minimumValue={0}
-            maximumValue={maxPriceCeiling}
-            step={1}
-            value={displayedMax}
-            onValueChange={onMaxPriceChange}
-            minimumTrackTintColor={theme.accent}
-            maximumTrackTintColor={theme.border}
-          />
+
+          <View style={styles.sliderContainer}>
+            <Slider
+              style={styles.slider}
+              minimumValue={0}
+              maximumValue={maxPriceCeiling}
+              step={1}
+              value={displayedMax}
+              onValueChange={onMaxPriceChange}
+              minimumTrackTintColor={theme.accent}
+              maximumTrackTintColor={theme.border}
+            />
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 }
