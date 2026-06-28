@@ -89,14 +89,14 @@ function getVideoSource(videoUrl: string) {
 interface ProductVideoProps {
   videoUrl?: string;
   /**
-   * When true, shows ExoPlayer's built-in controls instead of the
-   * tap-anywhere-to-toggle behavior. Default: false (tap to play/pause).
+   * When true, shows native player controls (including fullscreen).
+   * Default: true.
    */
   useNativeControls?: boolean;
 }
 export function ProductVideo({
   videoUrl,
-  useNativeControls = false,
+  useNativeControls = true,
 }: ProductVideoProps) {
   // ✅ Hook called unconditionally BEFORE any return
   const player = useVideoPlayer(
@@ -134,6 +134,7 @@ export function ProductVideo({
           style={styles.fill}
           contentFit="contain"
           nativeControls
+          fullscreenOptions={{ enable: true }}
           allowsPictureInPicture={false}
         />
       </View>

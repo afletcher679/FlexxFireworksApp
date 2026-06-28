@@ -1,20 +1,60 @@
-# Core excludes
-.git/
+# .easignore — controls what gets uploaded to EAS Build.
+
+# EAS regenerates native projects (android/ios) and installs node_modules in the
+
+# cloud, so uploading them is wasteful and blows past the 2 GB archive limit.
+
+# Your assets/ (videos & images) are NOT ignored — they stay in the build.
+
+# JS dependencies (EAS runs npm/yarn install in the cloud)
+
 node_modules/
 
-# Build/output/cache
+# Generated native projects (EAS runs prebuild in the cloud from app.json)
+
+android/
+ios/
+
+# Local caches / build output
+
 .expo/
 dist/
 web-build/
+.kotlin/
+.gradle/
+build/
+_.tsbuildinfo
+.metro-health-check_
 
-# Editor/OS/local metadata
+# VCS / editor / OS noise
+
+.git/
 .vscode/
+.idea/
 .DS_Store
 
+# Logs & debug
+
+npm-debug._
+yarn-debug._
+yarn-error.\*
+\*.log
+
+# Local env files
+
+.env\*.local
+
 # Docs not required for cloud builds
+
 README.md
 LICENSE
+docs/
 
-# Unused/legacy icon assets
+# Unused/legacy icon assets (NOT your app videos/images — those stay)
+
 assets/expo.icon/
 assets/images/favicon.png
+
+# Reference cert source (only needed by the removed Android plugin)
+
+android-assets/
