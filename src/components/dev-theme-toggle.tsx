@@ -3,10 +3,10 @@ import { Platform, Pressable, StyleSheet, View } from "react-native";
 
 import { Spacing } from "../constants/theme";
 import {
-    getThemeOverride,
-    setThemeOverride,
-    subscribeThemeOverrideChange,
-    ThemeOverride,
+  getThemeOverride,
+  setThemeOverride,
+  subscribeThemeOverrideChange,
+  ThemeOverride,
 } from "../hooks/use-color-scheme";
 import { useTheme } from "../hooks/use-theme";
 import { ThemedText } from "./themed-text";
