@@ -2,78 +2,53 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 import "react-native-url-polyfill/auto";
 
+// NOTE: no trailing slash — a trailing slash can cause malformed request URLs
 const supabaseUrl = "https://yyfzasangyvqglqiaiod.supabase.co";
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5Znphc2FuZ3l2cWdscWlhaW9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNzUzNTQsImV4cCI6MjA5NzY1MTM1NH0.QKd7zZ8bqE1Spm32YXhUHpewlKq3MMpdRJxfRbE7s7E";
 
-const isReactNativeRuntime =
-  typeof navigator !== "undefined" && navigator.product === "ReactNative";
+/**
+ * Runtime detection.
+ *
+ * React Native provides a global `WebSocket`, a global `fetch`, and sets
+ * `navigator.product === "ReactNative"`. We ONLY attempt the Node `ws` shim
+ * when we're genuinely on Node WITHOUT a global WebSocket (e.g. SSR / scripts).
+ * On React Native we must NEVER `require("ws")` — it isn't in the bundle and
+ * throwing there can crash module init or break the realtime client.
+ */
+const isReactNative =
+  typeof navigator !== "undefined" &&
+  (navigator as any).product === "ReactNative";
 
-const isNodeRuntime =
-  !isReactNativeRuntime &&
+const hasGlobalWebSocket = typeof (globalThis as any).WebSocket !== "undefined";
+
+const isNodeWithoutWebSocket =
+  !isReactNative &&
+  !hasGlobalWebSocket &&
   typeof process !== "undefined" &&
   !!(process as { versions?: { node?: string } }).versions?.node;
 
 const realtimeOptions: { transport?: any } = {};
 
-class NoopWebSocketTransport {
-  static readonly CONNECTING = 0;
-  static readonly OPEN = 1;
-  static readonly CLOSING = 2;
-  static readonly CLOSED = 3;
-
-  readonly CONNECTING = 0;
-  readonly OPEN = 1;
-  readonly CLOSING = 2;
-  readonly CLOSED = 3;
-  readonly readyState = 1;
-  readonly url = "";
-  readonly protocol = "";
-
-  onopen = null;
-  onmessage = null;
-  onclose = null;
-  onerror = null;
-
-  constructor(_address: string | URL, _subprotocols?: string | string[]) {}
-  close(_code?: number, _reason?: string) {}
-  send(_data: string | ArrayBufferLike | Blob | ArrayBufferView) {}
-  addEventListener(_type: string, _listener: EventListener) {}
-  removeEventListener(_type: string, _listener: EventListener) {}
-}
-
-if (isNodeRuntime && typeof globalThis.WebSocket === "undefined") {
+if (isNodeWithoutWebSocket) {
   try {
-    const dynamicRequire =
-      typeof require === "function"
-        ? require
-        : (Function(
-            'return typeof require === "function" ? require : undefined',
-          )() as ((id: string) => any) | undefined);
-
-    const wsModule = dynamicRequire ? dynamicRequire("ws") : undefined;
-    const wsTransport = wsModule?.WebSocket ?? wsModule;
-
-    if (typeof wsTransport === "function") {
-      realtimeOptions.transport = wsTransport;
-    } else {
-      realtimeOptions.transport = NoopWebSocketTransport;
-    }
-  } catch (error) {
-    realtimeOptions.transport = NoopWebSocketTransport;
-    console.warn(
-      'Node runtime detected without WebSocket transport. Install "ws".',
-      error,
-    );
+    // Only reached in a real Node runtime (never in the RN bundle).
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const wsModule = require("ws");
+    realtimeOptions.transport = wsModule?.WebSocket ?? wsModule;
+  } catch {
+    // No ws available; leave transport unset. Realtime simply won't be used.
   }
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   realtime: realtimeOptions,
   auth: {
+    // Recommended for React Native: persist the session in AsyncStorage and
+    // don't try to read the URL for OAuth redirects on every call.
     storage: AsyncStorage,
-    autoRefreshToken: true,
     persistSession: true,
+    autoRefreshToken: true,
     detectSessionInUrl: false,
   },
 });
@@ -86,7 +61,7 @@ export const testConnection = async () => {
       console.error("Connection failed:", error);
       return false;
     }
-    console.log("Connection successful!");
+    console.log("Connection successful!", data);
     return true;
   } catch (err) {
     console.error("Connection error:", err);

@@ -13,6 +13,7 @@
     },
     "preview": {
       "distribution": "internal",
+      "developmentClient": false,
       "android": {
         "buildType": "apk"
       },
@@ -20,14 +21,30 @@
         "simulator": false
       }
     },
+    "ios-simulator": {
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
     "production": {
       "autoIncrement": true,
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
+      },
+      "ios": {
+        "//": "No simulator / no internal flag => App Store distribution signing (required for TestFlight)."
       }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "//": "Fill these in for `eas submit` / TestFlight. appleTeamId is your Team ID; appleId is your Apple account email; ascAppId is the numeric App ID from App Store Connect (created when you make the app record).",
+        "appleId": "REPLACE_WITH_YOUR_APPLE_ID_EMAIL",
+        "ascAppId": "REPLACE_WITH_APP_STORE_CONNECT_APP_ID",
+        "appleTeamId": "89F8DQ79UH"
+      }
+    }
   }
 }
