@@ -1,6 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
+import "react-native-url-polyfill/auto";
 
-const supabaseUrl = "https://yyfzasangyvqglqiaiod.supabase.co/";
+const supabaseUrl = "https://yyfzasangyvqglqiaiod.supabase.co";
 const supabaseAnonKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5Znphc2FuZ3l2cWdscWlhaW9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNzUzNTQsImV4cCI6MjA5NzY1MTM1NH0.QKd7zZ8bqE1Spm32YXhUHpewlKq3MMpdRJxfRbE7s7E";
 
@@ -68,6 +70,12 @@ if (isNodeRuntime && typeof globalThis.WebSocket === "undefined") {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   realtime: realtimeOptions,
+  auth: {
+    storage: AsyncStorage,
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false,
+  },
 });
 
 // Test the connection
