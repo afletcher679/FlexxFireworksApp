@@ -6,7 +6,7 @@
 // - Multiple sorting options (name A-Z, price ascending/descending)
 // Uses useMemo for performance optimization to avoid unnecessary recalculations
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Firework } from "../types";
 
 // Category type definition
@@ -33,7 +33,8 @@ function matchesQuery(firework: Firework, query: string): boolean {
   const haystack = [
     firework.name,
     firework.description ?? "",
-    ...(firework.tags ?? []),
+    firework.type ?? "",
+    ...(firework.effects ?? []),
   ]
     .join(" ")
     .toLowerCase();
@@ -59,7 +60,7 @@ export function useProductFilter(products: Firework[]) {
         !filters.categories.has(product.category)
       )
         return false;
-      if (filters.maxPrice !== null && product.price > filters.maxPrice)
+      if (filters.maxPrice !== null && Number(product.price) > filters.maxPrice)
         return false;
       return true;
     });
@@ -67,9 +68,9 @@ export function useProductFilter(products: Firework[]) {
     // Sort by selected option
     switch (sortKey) {
       case "price-asc":
-        return [...result].sort((a, b) => a.price - b.price);
+        return [...result].sort((a, b) => Number(a.price) - Number(b.price));
       case "price-desc":
-        return [...result].sort((a, b) => b.price - a.price);
+        return [...result].sort((a, b) => Number(b.price) - Number(a.price));
       case "name":
         return [...result].sort((a, b) => a.name.localeCompare(b.name));
     }
