@@ -1,4 +1,5 @@
 import { useFocusEffect, useRouter } from "expo-router";
+import { SymbolView } from "expo-symbols";
 import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
@@ -22,6 +23,7 @@ import { Firework } from "../../types";
 export default function AdminScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [products, setProducts] = useState<Firework[]>([]);
   const [email, setEmail] = useState("flexxpyropro@gmail.com");
   const [isLoading, setIsLoading] = useState(false);
@@ -209,24 +211,46 @@ export default function AdminScreen() {
               onChangeText={(text) => { setLoginError(''); setEmail(text); }}
             /> */}
 
-            <TextInput
-              style={[
-                styles.passwordInput,
-                {
-                  backgroundColor: theme.backgroundElement,
-                  color: theme.text,
-                  borderColor: theme.textSecondary,
-                },
-              ]}
-              placeholder="Password"
-              placeholderTextColor={theme.textSecondary}
-              secureTextEntry={true}
-              value={passwordInput}
-              onChangeText={(text) => {
-                setLoginError("");
-                setPasswordInput(text);
-              }}
-            />
+            <ThemedView style={styles.passwordInputContainer}>
+              <TextInput
+                style={[
+                  styles.passwordInput,
+                  styles.passwordInputWithToggle,
+                  {
+                    backgroundColor: theme.backgroundElement,
+                    color: theme.text,
+                    borderColor: theme.textSecondary,
+                  },
+                ]}
+                placeholder="Password"
+                placeholderTextColor={theme.textSecondary}
+                secureTextEntry={!showPassword}
+                value={passwordInput}
+                onChangeText={(text) => {
+                  setLoginError("");
+                  setPasswordInput(text);
+                }}
+              />
+
+              <Pressable
+                style={styles.passwordToggleButton}
+                onPress={() => setShowPassword((prev) => !prev)}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  showPassword ? "Hide password" : "Show password"
+                }
+              >
+                <SymbolView
+                  name={{
+                    ios: showPassword ? "eye.slash" : "eye",
+                    android: showPassword ? "visibility_off" : "visibility",
+                    web: showPassword ? "visibility_off" : "visibility",
+                  }}
+                  size={20}
+                  tintColor={theme.textSecondary}
+                />
+              </Pressable>
+            </ThemedView>
 
             <Pressable
               style={({ pressed }) => [
@@ -352,6 +376,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     fontSize: 16,
+  },
+  passwordInputContainer: {
+    position: "relative",
+  },
+  passwordInputWithToggle: {
+    paddingRight: 44,
+  },
+  passwordToggleButton: {
+    position: "absolute",
+    right: Spacing.two,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 36,
   },
   loginButton: {
     paddingVertical: Spacing.three,
