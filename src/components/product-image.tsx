@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import { useState } from "react";
-import { View, StyleSheet, Modal, Pressable, Text } from "react-native";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 
 // Map image file paths to require statements for local assets
 const imageAssets: Record<string, any> = {
@@ -34,7 +34,7 @@ const imageAssets: Record<string, any> = {
   "freak_mvps.jpg": require("../../assets/images/fireworks/freak_mvps.jpg"),
   "freedom_rising.jpg": require("../../assets/images/fireworks/freedom_rising.jpg"),
   "game_over.jpg": require("../../assets/images/fireworks/game_over.jpg"),
-  "gatlin_gun.jpg": require("../../assets/images/fireworks/gatlin_gun.jpg"),
+  "gatling_gun.jpg": require("../../assets/images/fireworks/gatling_gun.jpg"),
   "ghost_buster.jpg": require("../../assets/images/fireworks/ghost_buster.jpg"),
   "goat.jpg": require("../../assets/images/fireworks/goat.jpg"),
   "godzilla.jpg": require("../../assets/images/fireworks/godzilla.jpg"),

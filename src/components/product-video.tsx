@@ -30,7 +30,7 @@ const videoAssets: Record<string, any> = {
   "dragon_blaster.mp4": require("../../assets/videos/dragon_blaster.mp4"),
   "freedom_rising.mp4": require("../../assets/videos/freedom_rising.mp4"),
   "game_over.mp4": require("../../assets/videos/game_over.mp4"),
-  "gatlin.mp4": require("../../assets/videos/gatlin.mp4"),
+  "gatling_gun.mp4": require("../../assets/videos/gatling_gun.mp4"),
   "goat.mp4": require("../../assets/videos/goat.mp4"),
   "godzilla.mp4": require("../../assets/videos/godzilla.mp4"),
   "godzilla_v_kong.mp4": require("../../assets/videos/godzilla_v_kong.mp4"),
