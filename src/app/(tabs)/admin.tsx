@@ -1,15 +1,9 @@
 import { useFocusEffect, useRouter } from "expo-router";
-import { SymbolView } from "expo-symbols";
 import { useCallback, useEffect, useState } from "react";
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import AdminLogin from "@/components/admin-login";
 import { InventoryCard } from "../../components/inventory-card";
 import { ProductSearchFilterControls } from "../../components/product-search-filter-controls";
 import { ThemedText } from "../../components/themed-text";
@@ -22,12 +16,7 @@ import { Firework } from "../../types";
 
 export default function AdminScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [products, setProducts] = useState<Firework[]>([]);
-  const [email, setEmail] = useState("flexxpyropro@gmail.com");
-  const [isLoading, setIsLoading] = useState(false);
-  const [loginError, setLoginError] = useState("");
 
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useTheme();
@@ -70,45 +59,6 @@ export default function AdminScreen() {
       setProducts(typedData);
     } catch (error) {
       console.error("Error fetching fireworks:", error);
-    }
-  };
-
-  const handleLogin = async () => {
-    if (!email || !passwordInput) {
-      Alert.alert("Error", "Please enter your email and password");
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password: passwordInput,
-      });
-
-      if (error) throw error;
-
-      // Check if the signed-in user has the admin role
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", data.user.id)
-        .single();
-
-      if (profileError) throw profileError;
-
-      if (profile.role !== "admin") {
-        await supabase.auth.signOut();
-        Alert.alert("Access Denied", "You do not have admin permissions");
-        return;
-      }
-
-      setIsAuthenticated(true);
-      setPasswordInput("");
-      setEmail("");
-    } catch (error: any) {
-      setLoginError(error.message || "Invalid email or password");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -175,102 +125,7 @@ export default function AdminScreen() {
     useProductFilter(products);
 
   if (!isAuthenticated) {
-    return (
-      <ScrollView
-        style={[styles.scrollView, { backgroundColor: theme.background }]}
-        contentInset={insets}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <ThemedView style={styles.container}>
-          <ThemedView style={styles.loginContainer}>
-            <ThemedText type="subtitle" style={styles.title}>
-              Admin Login
-            </ThemedText>
-            <ThemedText style={styles.subtitle} themeColor="textSecondary">
-              Sign in to access inventory
-            </ThemedText>
-
-            {loginError ? (
-              <ThemedText style={styles.errorText}>{loginError}</ThemedText>
-            ) : null}
-            {/* Hiding Email for now since we are using a fixed email for admin login
-            <TextInput
-              style={[
-                styles.passwordInput,
-                {
-                  backgroundColor: theme.backgroundElement,
-                  color: theme.text,
-                  borderColor: loginError ? '#ef4444' : theme.textSecondary,
-                },
-              ]}
-              placeholder="Email"
-              placeholderTextColor={theme.textSecondary}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              value={email}
-              onChangeText={(text) => { setLoginError(''); setEmail(text); }}
-            /> */}
-
-            <ThemedView style={styles.passwordInputContainer}>
-              <TextInput
-                style={[
-                  styles.passwordInput,
-                  styles.passwordInputWithToggle,
-                  {
-                    backgroundColor: theme.backgroundElement,
-                    color: theme.text,
-                    borderColor: theme.textSecondary,
-                  },
-                ]}
-                placeholder="Password"
-                placeholderTextColor={theme.textSecondary}
-                secureTextEntry={!showPassword}
-                value={passwordInput}
-                onChangeText={(text) => {
-                  setLoginError("");
-                  setPasswordInput(text);
-                }}
-              />
-
-              <Pressable
-                style={styles.passwordToggleButton}
-                onPress={() => setShowPassword((prev) => !prev)}
-                accessibilityRole="button"
-                accessibilityLabel={
-                  showPassword ? "Hide password" : "Show password"
-                }
-              >
-                <SymbolView
-                  name={{
-                    ios: showPassword ? "eye.slash" : "eye",
-                    android: showPassword ? "visibility_off" : "visibility",
-                    web: showPassword ? "visibility_off" : "visibility",
-                  }}
-                  size={20}
-                  tintColor={theme.textSecondary}
-                />
-              </Pressable>
-            </ThemedView>
-
-            <Pressable
-              style={({ pressed }) => [
-                styles.loginButton,
-                { backgroundColor: theme.tint },
-                pressed && styles.pressed,
-              ]}
-              onPress={handleLogin}
-              disabled={isLoading}
-            >
-              <ThemedText
-                style={[styles.buttonText, { color: theme.background }]}
-              >
-                {isLoading ? "Signing in..." : "Login"}
-              </ThemedText>
-            </Pressable>
-          </ThemedView>
-        </ThemedView>
-      </ScrollView>
-    );
+    return <AdminLogin onLoginSuccess={() => setIsAuthenticated(true)} />;
   }
 
   return (
