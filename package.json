@@ -44,6 +44,8 @@
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
+    "android:release:apk": "cd android && ./gradlew app:assembleRelease -x lint -x test --configure-on-demand --build-cache -PreactNativeDevServerPort=8081",
+    "android:release:apk:export": "npm run android:release:apk && bash ./scripts/export-android-release-apk.sh",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"

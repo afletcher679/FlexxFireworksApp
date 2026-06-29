@@ -38,6 +38,12 @@ yarn-error.*
 
 example
 
+# release artifacts (track only exported app binaries)
+artifacts/android/*
+!artifacts/android/.gitkeep
+!artifacts/android/*.apk
+!artifacts/android/*.aab
+
 # generated native folders
 /ios
 /android
