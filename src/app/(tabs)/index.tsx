@@ -18,6 +18,7 @@ export default function CatalogScreen() {
   const theme = useTheme();
   const [products, setProducts] = useState<Firework[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isFilterControlsOpen, setIsFilterControlsOpen] = useState(false);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -63,7 +64,7 @@ export default function CatalogScreen() {
         style={[
           styles.container,
           { backgroundColor: theme.background },
-          { paddingTop: insets.top + Spacing.six },
+          { paddingTop: insets.top + Spacing.four },
           { justifyContent: "center", alignItems: "center" },
         ]}
       >
@@ -76,7 +77,7 @@ export default function CatalogScreen() {
       style={[
         styles.container,
         { backgroundColor: theme.background },
-        { paddingTop: insets.top + Spacing.six },
+        { paddingTop: insets.top + Spacing.four },
       ]}
     >
       <ThemedText style={{ color: theme.textMuted, textAlign: "center" }}>
@@ -86,18 +87,27 @@ export default function CatalogScreen() {
       <ThemedView
         style={[styles.stickyControls, { borderBottomColor: theme.border }]}
       >
-        <ProductSearchFilterControls
-          filters={filters}
-          setFilters={setFilters}
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          maxPriceCeiling={maxPriceCeiling}
-        />
+        <ThemedView onTouchStart={(event) => event.stopPropagation()}>
+          <ProductSearchFilterControls
+            filters={filters}
+            setFilters={setFilters}
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            maxPriceCeiling={maxPriceCeiling}
+            isOpen={isFilterControlsOpen}
+            onOpenChange={setIsFilterControlsOpen}
+          />
+        </ThemedView>
       </ThemedView>
 
       {/* Main scrollable content */}
       <ScrollView
         style={styles.scrollView}
+        onTouchStart={() => {
+          if (isFilterControlsOpen) {
+            setIsFilterControlsOpen(false);
+          }
+        }}
         contentContainerStyle={{
           paddingBottom: insets.bottom,
         }}

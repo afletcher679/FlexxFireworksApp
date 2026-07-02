@@ -13,6 +13,8 @@ interface ProductSearchFilterControlsProps {
   setSortKey: (option: SortOptions) => void;
   maxPriceCeiling?: number;
   title?: string;
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
 }
 
 export function ProductSearchFilterControls({
@@ -22,11 +24,13 @@ export function ProductSearchFilterControls({
   setSortKey,
   maxPriceCeiling,
   title = "Search, Filter, and Sort",
+  isOpen,
+  onOpenChange,
 }: ProductSearchFilterControlsProps) {
   const theme = useTheme();
   return (
     <View style={[styles.container, { borderColor: theme.sectionBorder }]}>
-      <Collapsible title={title}>
+      <Collapsible title={title} isOpen={isOpen} onOpenChange={onOpenChange}>
         <SearchBar
           query={filters.query}
           onQueryChange={(query) => setFilters({ ...filters, query })}

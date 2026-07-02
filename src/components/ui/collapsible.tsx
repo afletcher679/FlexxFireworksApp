@@ -2,30 +2,48 @@ import { SymbolView } from "expo-symbols";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import Animated, {
-  FadeIn,
-  interpolate,
-  useAnimatedStyle,
-  Extrapolation,
+    Extrapolation,
+    FadeIn,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue, withTiming,
 } from "react-native-reanimated";
-import { useSharedValue, withTiming } from "react-native-reanimated";
 
 import { ThemedText } from "../../components/themed-text";
 import { ThemedView } from "../../components/themed-view";
 import { Spacing } from "../../constants/theme";
 import { useTheme } from "../../hooks/use-theme";
 
+interface CollapsibleProps extends PropsWithChildren {
+  title: string;
+  isOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
+}
+
 export function Collapsible({
   children,
   title,
-}: PropsWithChildren & { title: string }) {
-  const [isOpen, setIsOpen] = useState(false);
+  isOpen,
+  onOpenChange,
+}: CollapsibleProps) {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
   const theme = useTheme();
   const rotation = useSharedValue(0);
 
+  const resolvedIsOpen = isOpen ?? internalIsOpen;
+
+  const setOpen = (nextIsOpen: boolean) => {
+    if (isOpen === undefined) {
+      setInternalIsOpen(nextIsOpen);
+    }
+
+    onOpenChange?.(nextIsOpen);
+  };
+
   // Sync rotation animation with isOpen state
   useEffect(() => {
-    rotation.value = withTiming(isOpen ? 1 : 0, { duration: 300 });
-  }, [isOpen]);
+    rotation.value = withTiming(resolvedIsOpen ? 1 : 0, { duration: 300 });
+  }, [resolvedIsOpen]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -46,7 +64,7 @@ export function Collapsible({
           styles.heading,
           pressed && styles.pressedHeading,
         ]}
-        onPress={() => setIsOpen((value) => !value)}
+        onPress={() => setOpen(!resolvedIsOpen)}
       >
         <ThemedView type="backgroundElement" style={styles.button}>
           <Animated.View style={animatedStyle}>
@@ -65,7 +83,7 @@ export function Collapsible({
 
         <ThemedText type="small">{title}</ThemedText>
       </Pressable>
-      {isOpen && (
+      {resolvedIsOpen && (
         <Animated.View entering={FadeIn.duration(200)}>
           <ThemedView type="backgroundElement" style={styles.content}>
             {children}

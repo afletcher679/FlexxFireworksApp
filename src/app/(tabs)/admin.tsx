@@ -17,6 +17,7 @@ import { Firework } from "../../types";
 export default function AdminScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [products, setProducts] = useState<Firework[]>([]);
+  const [isFilterControlsOpen, setIsFilterControlsOpen] = useState(false);
 
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useTheme();
@@ -131,12 +132,17 @@ export default function AdminScreen() {
   return (
     <ScrollView
       style={[styles.scrollView, { backgroundColor: theme.background }]}
+      onTouchStart={() => {
+        if (isFilterControlsOpen) {
+          setIsFilterControlsOpen(false);
+        }
+      }}
     >
       <ThemedView style={styles.container}>
         <ThemedView
           style={[
             styles.headerContainer,
-            { paddingTop: insets.top + Spacing.six },
+            { paddingTop: insets.top + Spacing.four },
           ]}
         >
           <ThemedText
@@ -176,12 +182,16 @@ export default function AdminScreen() {
         </ThemedView>
         {/* Products List */}
         <ThemedView style={styles.contentArea}>
-          <ProductSearchFilterControls
-            filters={filters}
-            setFilters={setFilters}
-            sortKey={sortKey}
-            setSortKey={setSortKey}
-          />
+          <ThemedView onTouchStart={(event) => event.stopPropagation()}>
+            <ProductSearchFilterControls
+              filters={filters}
+              setFilters={setFilters}
+              sortKey={sortKey}
+              setSortKey={setSortKey}
+              isOpen={isFilterControlsOpen}
+              onOpenChange={setIsFilterControlsOpen}
+            />
+          </ThemedView>
           <ThemedText type="subtitle" style={styles.sectionTitle}>
             Current Fireworks ({products.length})
           </ThemedText>
