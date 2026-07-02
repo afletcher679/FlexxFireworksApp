@@ -2,7 +2,7 @@
   "expo": {
     "name": "Flexx Fireworks",
     "slug": "flexx-fireworks-app",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "flexxfireworksapp",
