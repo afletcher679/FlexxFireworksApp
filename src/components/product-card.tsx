@@ -41,7 +41,14 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <View style={themedStyles.card}>
+    <View
+      style={themedStyles.card}
+      onTouchStart={() => {
+        if (isVideoShown) {
+          setIsVideoShown(false);
+        }
+      }}
+    >
       {/* Image and Info Section */}
       <View style={styles.contentContainer}>
         {/* Product Image on the left */}
@@ -100,11 +107,19 @@ export function ProductCard({ product }: ProductCardProps) {
       </View>
 
       {!!product.video_url && (
-        <Collapsible title={isVideoShown ? "Hide Demo" : "Show Demo"}>
-          <View style={[styles.videoContainer, { borderColor: theme.accent }]}>
-            <ProductVideo videoUrl={product.video_url} />
-          </View>
-        </Collapsible>
+        <View onTouchStart={(event) => event.stopPropagation()}>
+          <Collapsible
+            title={isVideoShown ? "Hide Demo" : "Show Demo"}
+            isOpen={isVideoShown}
+            onOpenChange={setIsVideoShown}
+          >
+            <View
+              style={[styles.videoContainer, { borderColor: theme.accent }]}
+            >
+              <ProductVideo videoUrl={product.video_url} />
+            </View>
+          </Collapsible>
+        </View>
       )}
     </View>
   );
