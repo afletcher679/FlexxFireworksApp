@@ -41,9 +41,11 @@ const styles = StyleSheet.create({
   pickerContainer: {
     borderRadius: 10,
     overflow: "hidden",
+    width: "100%",
   },
   picker: {
     height: 50,
+    width: "100%",
   },
   // Category chips container
   chipRow: {
@@ -109,7 +111,10 @@ export function FilterPanel({
   const onMaxPriceChange = (value: number) => {
     setFilters({
       ...filters,
-      maxPrice: value >= maxPriceCeiling ? null : value,
+      maxPrice:
+        maxPriceCeiling !== undefined && value >= maxPriceCeiling
+          ? null
+          : value,
     });
   };
 
@@ -140,9 +145,10 @@ export function FilterPanel({
           ]}
         >
           <Picker
-            style={styles.picker}
+            style={[styles.picker, { color: theme.text }]}
             selectedValue={sortOption}
             onValueChange={(itemValue: SortOptions) => setSortOption(itemValue)}
+            dropdownIconColor={theme.text}
             itemStyle={{ color: theme.text }}
           >
             <Picker.Item label="Name (A-Z)" value="name" />
@@ -182,7 +188,7 @@ export function FilterPanel({
       </View>
 
       {/* Price range slider with dynamic label showing current max */}
-      {maxPriceCeiling !== undefined && (
+      {maxPriceCeiling !== undefined && displayedMax !== undefined && (
         <View style={styles.section}>
           <Text style={themedStyles.label}>
             Max Price: ${displayedMax.toFixed(0)}
