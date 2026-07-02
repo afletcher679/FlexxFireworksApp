@@ -38,8 +38,11 @@ export function DevThemeToggle() {
 
   return (
     <View
-      pointerEvents="box-none"
-      style={[styles.overlayContainer, { borderColor: theme.border }]}
+      style={[
+        styles.overlayContainer,
+        { borderColor: theme.border },
+        { pointerEvents: "box-none" },
+      ]}
     >
       <View
         style={[
